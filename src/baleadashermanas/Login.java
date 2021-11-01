@@ -24,13 +24,17 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Login
      */
     public Login() {
-        initComponents();   
-        holders();
-        informacionGeneral();
+       init();    
     }
     
     
    
+   public void init(){
+        initComponents();
+        holders();
+        informacionGeneral();
+   } 
+    
     public void informacionGeneral(){
         this.setTitle("Login");
         this.setLocationRelativeTo(null);
