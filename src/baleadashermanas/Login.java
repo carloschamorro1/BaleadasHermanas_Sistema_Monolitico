@@ -26,11 +26,12 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();   
         holders();
-        info();
+        informacionGeneral();
     }
     
+    
    
-    public void info(){
+    public void informacionGeneral(){
         this.setTitle("Login");
         this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon(getClass().getResource("../Img/Titulo.png")).getImage());
