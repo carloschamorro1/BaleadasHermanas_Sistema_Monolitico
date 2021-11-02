@@ -19,6 +19,7 @@ import javax.swing.UIManager;
  */
 public class Login extends javax.swing.JFrame {
     int click = 0;
+    int clickContraseñaOlvidada = 0;
     
     /**
      * Creates new form Login
@@ -87,14 +88,12 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        btn_ingresar.setBackground(new java.awt.Color(204, 0, 204));
+        btn_ingresar.setBackground(new java.awt.Color(205, 63, 145));
         btn_ingresar.setFont(new java.awt.Font("Roboto Black", 0, 24)); // NOI18N
         btn_ingresar.setForeground(new java.awt.Color(255, 255, 255));
         btn_ingresar.setText("Ingresar");
+        btn_ingresar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btn_ingresar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btn_ingresarMouseClicked(evt);
-            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btn_ingresarMouseEntered(evt);
             }
@@ -108,9 +107,16 @@ public class Login extends javax.swing.JFrame {
 
         lbl_contraseñaOlvidada.setFont(new java.awt.Font("Roboto", 0, 24)); // NOI18N
         lbl_contraseñaOlvidada.setText("¿Has olvidado tu contraseña?");
-        lbl_contraseñaOlvidada.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                lbl_contraseñaOlvidadaFocusGained(evt);
+        lbl_contraseñaOlvidada.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbl_contraseñaOlvidada.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbl_contraseñaOlvidadaMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lbl_contraseñaOlvidadaMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                lbl_contraseñaOlvidadaMouseExited(evt);
             }
         });
 
@@ -137,16 +143,13 @@ public class Login extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btn_ingresar, javax.swing.GroupLayout.PREFERRED_SIZE, 454, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lbl_contraseña, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(lbl_usuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txt_usuario)
-                                    .addComponent(txt_contraseña, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbl_contraseña, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbl_usuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txt_usuario)
+                            .addComponent(txt_contraseña, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE))
                         .addGap(8, 8, 8)
                         .addComponent(lbl_vercontraseña, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())
@@ -154,9 +157,14 @@ public class Login extends javax.swing.JFrame {
                         .addComponent(lbl_contraseñaOlvidada)
                         .addGap(109, 109, 109))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lbl_titulo)
-                .addGap(176, 176, 176))
+                .addContainerGap(40, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(lbl_titulo)
+                        .addGap(176, 176, 176))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(btn_ingresar, javax.swing.GroupLayout.PREFERRED_SIZE, 454, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -212,13 +220,11 @@ public class Login extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void lbl_contraseñaOlvidadaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_lbl_contraseñaOlvidadaFocusGained
-        lbl_contraseñaOlvidada.setForeground(Color.red);
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lbl_contraseñaOlvidadaFocusGained
-
     private void btn_ingresarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_ingresarMousePressed
         btn_ingresar.setBackground(new Color(40,74,172));
+        this.dispose();
+        Empleados empleado = new Empleados();
+        empleado.setVisible(true);
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_ingresarMousePressed
 
@@ -249,10 +255,26 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_vercontraseñaMouseClicked
 
-    private void btn_ingresarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_ingresarMouseClicked
-        JOptionPane.showMessageDialog(this, "Bienvenido al sistema");
+    private void lbl_contraseñaOlvidadaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_contraseñaOlvidadaMouseEntered
+        lbl_contraseñaOlvidada.setForeground(new Color(205,63,145));
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_ingresarMouseClicked
+    }//GEN-LAST:event_lbl_contraseñaOlvidadaMouseEntered
+
+    private void lbl_contraseñaOlvidadaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_contraseñaOlvidadaMouseExited
+        if(clickContraseñaOlvidada==0){
+            lbl_contraseñaOlvidada.setForeground(Color.black); 
+        }
+        if(clickContraseñaOlvidada>=1){
+          lbl_contraseñaOlvidada.setForeground(Color.blue);  
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lbl_contraseñaOlvidadaMouseExited
+
+    private void lbl_contraseñaOlvidadaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_contraseñaOlvidadaMouseClicked
+    lbl_contraseñaOlvidada.setForeground(Color.blue);
+    clickContraseñaOlvidada++;
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lbl_contraseñaOlvidadaMouseClicked
 
     /**
      * @param args the command line arguments
@@ -265,7 +287,7 @@ public class Login extends javax.swing.JFrame {
          */
         try{
             UIManager.setLookAndFeel(new FlatIntelliJLaf());
-            UIManager.put( "Button.arc", 650 );
+            UIManager.put( "Button.arc", 450 );
         }catch(Exception e){
             e.printStackTrace();
         }
