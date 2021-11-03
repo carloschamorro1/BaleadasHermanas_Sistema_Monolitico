@@ -223,8 +223,8 @@ public class Login extends javax.swing.JFrame {
     private void btn_ingresarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_ingresarMousePressed
         btn_ingresar.setBackground(new Color(40,74,172));
         this.dispose();
-        Empleados empleado = new Empleados();
-        empleado.setVisible(true);
+        Principal principal = new Principal();
+        principal.setVisible(true);
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_ingresarMousePressed
 
@@ -287,7 +287,7 @@ public class Login extends javax.swing.JFrame {
          */
         try{
             UIManager.setLookAndFeel(new FlatIntelliJLaf());
-            UIManager.put( "Button.arc", 450 );
+            UIManager.put( "Button.arc", 500 );
         }catch(Exception e){
             e.printStackTrace();
         }

@@ -67,19 +67,19 @@ public class Empleados extends javax.swing.JFrame {
         txt_emailEmpleado = new javax.swing.JTextField();
         txt_dniEmpleado = new javax.swing.JTextField();
         txt_usuarioEmpleado = new javax.swing.JTextField();
-        lbl_titulo = new javax.swing.JLabel();
+        lbl_nombreUsuario = new javax.swing.JLabel();
         btn_agregar = new javax.swing.JButton();
         btn_actualizar = new javax.swing.JButton();
         btn_buscar = new javax.swing.JButton();
         btn_eliminar = new javax.swing.JButton();
         lbl_home = new javax.swing.JLabel();
         lbl_usuario = new javax.swing.JLabel();
-        lbl_titulo1 = new javax.swing.JLabel();
-        lbl_titulo2 = new javax.swing.JLabel();
+        lbl_datosInicioEmpleado = new javax.swing.JLabel();
+        lbl_tituloEmpleados = new javax.swing.JLabel();
         txt_contraseñaEmpleado = new javax.swing.JPasswordField();
         lbl_segundoNombreEmpleado = new javax.swing.JLabel();
         lbl_contraseña = new javax.swing.JLabel();
-        lbl_telefono_empleado = new javax.swing.JLabel();
+        lbl_telefonoEmpleado = new javax.swing.JLabel();
         lbl_primerApellidoEmpleado = new javax.swing.JLabel();
         lbl_segundoApellidoEmpleado = new javax.swing.JLabel();
         lbl_primerNombreEmpleado = new javax.swing.JLabel();
@@ -153,8 +153,8 @@ public class Empleados extends javax.swing.JFrame {
             }
         });
 
-        lbl_titulo.setFont(new java.awt.Font("Roboto Black", 0, 24)); // NOI18N
-        lbl_titulo.setText("Nombre de Usuario");
+        lbl_nombreUsuario.setFont(new java.awt.Font("Roboto Black", 0, 24)); // NOI18N
+        lbl_nombreUsuario.setText("Nombre de Usuario");
 
         btn_agregar.setBackground(new java.awt.Color(205, 63, 145));
         btn_agregar.setFont(new java.awt.Font("Roboto Black", 0, 24)); // NOI18N
@@ -235,11 +235,11 @@ public class Empleados extends javax.swing.JFrame {
         lbl_usuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/profile.png"))); // NOI18N
         lbl_usuario.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        lbl_titulo1.setFont(new java.awt.Font("Roboto Black", 0, 48)); // NOI18N
-        lbl_titulo1.setText("Datos de Inicio");
+        lbl_datosInicioEmpleado.setFont(new java.awt.Font("Roboto Black", 0, 48)); // NOI18N
+        lbl_datosInicioEmpleado.setText("Datos de Inicio");
 
-        lbl_titulo2.setFont(new java.awt.Font("Roboto Black", 0, 48)); // NOI18N
-        lbl_titulo2.setText("Empleados");
+        lbl_tituloEmpleados.setFont(new java.awt.Font("Roboto Black", 0, 48)); // NOI18N
+        lbl_tituloEmpleados.setText("Empleados");
 
         txt_contraseñaEmpleado.setFont(new java.awt.Font("Roboto", 0, 24)); // NOI18N
         txt_contraseñaEmpleado.setEchoChar('*');
@@ -257,11 +257,16 @@ public class Empleados extends javax.swing.JFrame {
         });
 
         lbl_contraseña.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/candado-cerrado.png"))); // NOI18N
-
-        lbl_telefono_empleado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/phone-call.png"))); // NOI18N
-        lbl_telefono_empleado.addMouseListener(new java.awt.event.MouseAdapter() {
+        lbl_contraseña.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                lbl_telefono_empleadoMousePressed(evt);
+                lbl_contraseñaMousePressed(evt);
+            }
+        });
+
+        lbl_telefonoEmpleado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/phone-call.png"))); // NOI18N
+        lbl_telefonoEmpleado.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                lbl_telefonoEmpleadoMousePressed(evt);
             }
         });
 
@@ -329,12 +334,12 @@ public class Empleados extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(lbl_usuario)
                         .addGap(18, 18, 18)
-                        .addComponent(lbl_titulo))
+                        .addComponent(lbl_nombreUsuario))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(90, 90, 90)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(lbl_segundoNombreEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbl_telefono_empleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_telefonoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbl_primerApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbl_segundoApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbl_primerNombreEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -363,7 +368,7 @@ public class Empleados extends javax.swing.JFrame {
                                 .addComponent(lbl_vercontraseña, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(123, 123, 123)
-                                .addComponent(lbl_titulo1)
+                                .addComponent(lbl_datosInicioEmpleado)
                                 .addGap(0, 158, Short.MAX_VALUE)))))
                 .addGap(61, 61, 61))
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -379,7 +384,7 @@ public class Empleados extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(492, 492, 492)
-                    .addComponent(lbl_titulo2)
+                    .addComponent(lbl_tituloEmpleados)
                     .addContainerGap(498, Short.MAX_VALUE)))
         );
 
@@ -392,7 +397,7 @@ public class Empleados extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lbl_titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_nombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbl_home, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(21, 21, 21)
@@ -408,7 +413,7 @@ public class Empleados extends javax.swing.JFrame {
                             .addComponent(txt_dniEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbl_dniEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(58, 58, 58)
-                        .addComponent(lbl_titulo1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lbl_datosInicioEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(64, 64, 64)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -434,7 +439,7 @@ public class Empleados extends javax.swing.JFrame {
                             .addComponent(txt_segundoApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(32, 32, 32)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbl_telefono_empleado, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_telefonoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(txt_telefonoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(txt_contraseñaEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -443,15 +448,15 @@ public class Empleados extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_agregar)
                     .addComponent(btn_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_eliminar))
-                .addGap(5, 5, 5))
+                .addGap(19, 19, 19))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(48, 48, 48)
-                    .addComponent(lbl_titulo2, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_tituloEmpleados, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(702, Short.MAX_VALUE)))
         );
 
@@ -461,17 +466,17 @@ public class Empleados extends javax.swing.JFrame {
         kGradientPanel1.setLayout(kGradientPanel1Layout);
         kGradientPanel1Layout.setHorizontalGroup(
             kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, kGradientPanel1Layout.createSequentialGroup()
-                .addContainerGap(47, Short.MAX_VALUE)
+            .addGroup(kGradientPanel1Layout.createSequentialGroup()
+                .addGap(38, 38, 38)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         kGradientPanel1Layout.setVerticalGroup(
             kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, kGradientPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(kGradientPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -603,10 +608,10 @@ public class Empleados extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_primerNombreEmpleadoMousePressed
 
-    private void lbl_telefono_empleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_telefono_empleadoMousePressed
+    private void lbl_telefonoEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_telefonoEmpleadoMousePressed
         txt_telefonoEmpleado.requestFocus();
         // TODO add your handling code here:
-    }//GEN-LAST:event_lbl_telefono_empleadoMousePressed
+    }//GEN-LAST:event_lbl_telefonoEmpleadoMousePressed
 
     private void lbl_emailEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_emailEmpleadoMousePressed
         txt_emailEmpleado.requestFocus();
@@ -614,7 +619,7 @@ public class Empleados extends javax.swing.JFrame {
     }//GEN-LAST:event_lbl_emailEmpleadoMousePressed
 
     private void lbl_dniEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_dniEmpleadoMousePressed
-        txt_emailEmpleado.requestFocus();
+        txt_dniEmpleado.requestFocus();
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_dniEmpleadoMousePressed
 
@@ -644,11 +649,16 @@ public class Empleados extends javax.swing.JFrame {
     }//GEN-LAST:event_lbl_segundoApellidoEmpleadoMousePressed
 
     private void lbl_homeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_homeMousePressed
-        Login login = new Login();
+        Principal principal = new Principal();
         this.dispose();
-        login.setVisible(true);
+        principal.setVisible(true);
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_homeMousePressed
+
+    private void lbl_contraseñaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_contraseñaMousePressed
+        txt_contraseñaEmpleado.requestFocus();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lbl_contraseñaMousePressed
 
     /**
      * @param args the command line arguments
@@ -693,18 +703,18 @@ public class Empleados extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private keeptoo.KGradientPanel kGradientPanel1;
     private javax.swing.JLabel lbl_contraseña;
+    private javax.swing.JLabel lbl_datosInicioEmpleado;
     private javax.swing.JLabel lbl_dniEmpleado;
     private javax.swing.JLabel lbl_emailEmpleado;
     private javax.swing.JLabel lbl_home;
+    private javax.swing.JLabel lbl_nombreUsuario;
     private javax.swing.JLabel lbl_nombreUsuarioEmpleado;
     private javax.swing.JLabel lbl_primerApellidoEmpleado;
     private javax.swing.JLabel lbl_primerNombreEmpleado;
     private javax.swing.JLabel lbl_segundoApellidoEmpleado;
     private javax.swing.JLabel lbl_segundoNombreEmpleado;
-    private javax.swing.JLabel lbl_telefono_empleado;
-    private javax.swing.JLabel lbl_titulo;
-    private javax.swing.JLabel lbl_titulo1;
-    private javax.swing.JLabel lbl_titulo2;
+    private javax.swing.JLabel lbl_telefonoEmpleado;
+    private javax.swing.JLabel lbl_tituloEmpleados;
     private javax.swing.JLabel lbl_usuario;
     private javax.swing.JLabel lbl_vercontraseña;
     private javax.swing.JPasswordField txt_contraseñaEmpleado;
