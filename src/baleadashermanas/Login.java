@@ -287,7 +287,7 @@ public class Login extends javax.swing.JFrame {
          */
         try{
             UIManager.setLookAndFeel(new FlatIntelliJLaf());
-            UIManager.put( "Button.arc", 500 );
+            UIManager.put( "Button.arc", 35 );
         }catch(Exception e){
             e.printStackTrace();
         }

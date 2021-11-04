@@ -15,6 +15,7 @@
             <word>Clientes</word>
             <word>Empleados</word>
             <word>Inventario</word>
+            <word>Orden</word>
         </spellchecker-wordlist>
     </configuration>
 </project>

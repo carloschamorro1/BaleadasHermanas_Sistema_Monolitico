@@ -224,10 +224,12 @@ public class Inventario extends javax.swing.JFrame {
         });
 
         spi_cantidadProducto.setFont(new java.awt.Font("Roboto", 0, 11)); // NOI18N
+        spi_cantidadProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         cmb_tipoMovimiento.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
         cmb_tipoMovimiento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione el movimiento", "Ingreso", "Retiro" }));
         cmb_tipoMovimiento.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        cmb_tipoMovimiento.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
