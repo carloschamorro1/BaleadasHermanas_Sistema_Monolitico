@@ -468,13 +468,13 @@ public class Orden extends javax.swing.JFrame {
         lbl_total.setText("Total");
 
         txt_subtotal.setEditable(false);
-        txt_subtotal.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        txt_subtotal.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
 
         txt_total.setEditable(false);
-        txt_total.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        txt_total.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
 
         txt_isv.setEditable(false);
-        txt_isv.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        txt_isv.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
 
         javax.swing.GroupLayout jpn_totalLayout = new javax.swing.GroupLayout(jpn_total);
         jpn_total.setLayout(jpn_totalLayout);
@@ -527,10 +527,10 @@ public class Orden extends javax.swing.JFrame {
         lbl_cambio.setText("Cambio");
 
         txt_cambio.setEditable(false);
-        txt_cambio.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        txt_cambio.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
 
         txt_pago.setEditable(false);
-        txt_pago.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        txt_pago.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
 
         cmb_metodoPago.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
         cmb_metodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione el método", "Efectivo", "Tarjeta" }));
