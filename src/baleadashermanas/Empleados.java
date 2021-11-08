@@ -19,10 +19,15 @@ public class Empleados extends javax.swing.JFrame {
     /**
      * Creates new form Empleados
      */
-    public Empleados() {
+    public Empleados(String nombreUsuario) {
         initComponents();
         informacionGeneral();
         holders();
+        lbl_nombreUsuario.setText(nombreUsuario);
+    }
+    
+    public Empleados() {
+      
     }
     
     public void informacionGeneral(){
@@ -649,7 +654,7 @@ public class Empleados extends javax.swing.JFrame {
     }//GEN-LAST:event_lbl_segundoApellidoEmpleadoMousePressed
 
     private void lbl_homeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_homeMousePressed
-        Principal principal = new Principal();
+        Principal principal = new Principal(lbl_nombreUsuario.getText());
         this.dispose();
         principal.setVisible(true);
         // TODO add your handling code here:

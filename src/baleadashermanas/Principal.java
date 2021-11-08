@@ -6,6 +6,9 @@
 package baleadashermanas;
 
 import java.awt.Color;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -18,9 +21,15 @@ public class Principal extends javax.swing.JFrame {
     /**
      * Creates new form Principal
      */
-    public Principal() {
+ 
+    public Principal(String nombreUsuario){
         initComponents();
         informacionGeneral();
+        lbl_nombreUsuario.setText(nombreUsuario);
+    }
+
+    public Principal() {
+        
     }
     
      public void informacionGeneral(){
@@ -251,7 +260,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void btn_empleadosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_empleadosMousePressed
         btn_empleados.setBackground(new Color(40,74,172));
-        Empleados empleado = new Empleados();
+        Empleados empleado = new Empleados(lbl_nombreUsuario.getText());
         this.dispose();
         empleado.setVisible(true);
         // TODO add your handling code here:
@@ -269,7 +278,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void btn_ordenesMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_ordenesMousePressed
         btn_ordenes.setBackground(new Color(40,74,172));
-        Orden orden = new Orden();
+        Orden orden = new Orden(lbl_nombreUsuario.getText());
         this.dispose();
         orden.setVisible(true);
         // TODO add your handling code here:
@@ -287,7 +296,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void btn_clientesMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_clientesMousePressed
         btn_clientes.setBackground(new Color(40,74,172));
-        Clientes cliente = new Clientes();
+        Clientes cliente = new Clientes(lbl_nombreUsuario.getText());
         this.dispose();
         cliente.setVisible(true);
         // TODO add your handling code here:
@@ -305,7 +314,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void btn_inventarioMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_inventarioMousePressed
         btn_clientes.setBackground(new Color(40,74,172));
-        Inventario inventario = new Inventario();
+        Inventario inventario = new Inventario(lbl_nombreUsuario.getText());
         this.dispose();
         inventario.setVisible(true);
         // TODO add your handling code here:
@@ -316,7 +325,12 @@ public class Principal extends javax.swing.JFrame {
         lbl_cerrarSesion.setIcon(new javax.swing.ImageIcon("C:\\Users\\cmcha\\Documents\\NetBeansProjects\\BaleadasHermanas\\BaleadasHermanas\\src\\Img\\cerrar-sesion-rojo.png"));
         if(JOptionPane.showOptionDialog(null,"¿Está seguro/a que desea cerrar sesión?","Confirmación de cerrar sesión",
                    JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,opciones,opciones[0])==JOptionPane.YES_OPTION){ 
-            Login login = new Login();
+            Login login = null;
+            try {
+                login = new Login();
+            } catch (SQLException ex) {
+                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            }
             this.dispose();
             login.setVisible(true);
         }  

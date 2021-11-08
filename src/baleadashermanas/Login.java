@@ -5,27 +5,39 @@
  */
 package baleadashermanas;
 
+import baleadashermanas.BD.ConexionBD;
 import com.formdev.flatlaf.*;
 import com.placeholder.PlaceHolder;
 import java.awt.Color;
+import java.awt.Toolkit;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
  * @author Carlos
  */
 public class Login extends javax.swing.JFrame {
+    Connection con;
     int click = 0;
     int clickContraseñaOlvidada = 0;
     
     /**
      * Creates new form Login
      */
-    public Login() {
-       init();    
+    public Login() throws SQLException {
+       
+       init();
+       this.con = ConexionBD.obtenerConexion();
     }
     
     
@@ -48,6 +60,13 @@ public class Login extends javax.swing.JFrame {
         PlaceHolder holder2;
         holder = new PlaceHolder(txt_usuario,Color.gray,Color.black,"Usuario",false,"Roboto",25);
         holder = new PlaceHolder(txt_contraseña,Color.gray,Color.black,"Contraseña",false,"Roboto",25);
+    }
+    
+    public boolean isEmpty(){
+       if("".equals(txt_usuario.getText()) || "".equals(txt_contraseña.getText()))
+        return true;
+        else
+            return false; 
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -102,6 +121,11 @@ public class Login extends javax.swing.JFrame {
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btn_ingresarMousePressed(evt);
+            }
+        });
+        btn_ingresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ingresarActionPerformed(evt);
             }
         });
 
@@ -222,9 +246,39 @@ public class Login extends javax.swing.JFrame {
 
     private void btn_ingresarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_ingresarMousePressed
         btn_ingresar.setBackground(new Color(40,74,172));
-        this.dispose();
-        Principal principal = new Principal();
-        principal.setVisible(true);
+       
+       try{
+            String usuario = txt_usuario.getText();
+            char[] c = txt_contraseña.getPassword();
+            String contraseñaFinal ="";
+            for (int i = 0; i < c.length; i++) {
+                contraseñaFinal  += String.valueOf(c[i]);
+            }
+
+            String contraseñaEncriptada=DigestUtils.md5Hex(contraseñaFinal);
+            String sql = "SELECT * from empleado where usuario_empleado ='" +usuario+ "' and contraseña_empleado='"+contraseñaEncriptada+"' COLLATE Latin1_General_CS_AS";
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            if(isEmpty()){
+                getToolkit().beep();
+                JOptionPane.showMessageDialog(null, "Por favor llene todos los campos.", "Ingrese sus datos", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            if(rs.next()){
+                this.dispose();
+                Principal principal = new Principal(txt_usuario.getText());
+                principal.setVisible(true);
+            }
+            else{
+                Toolkit.getDefaultToolkit().beep();
+                txt_contraseña.setText("");
+                JOptionPane.showMessageDialog(null, "El nombre de usuario o contraseña no coinciden", "Las credenciales no concuerdan", JOptionPane.ERROR_MESSAGE);
+            }
+
+        }catch(Exception e){
+
+        }    
+        
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_ingresarMousePressed
 
@@ -276,6 +330,10 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_contraseñaOlvidadaMouseClicked
 
+    private void btn_ingresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ingresarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_ingresarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -297,7 +355,11 @@ public class Login extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Login().setVisible(true);
+                try {
+                    new Login().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

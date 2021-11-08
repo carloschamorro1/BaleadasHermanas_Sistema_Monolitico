@@ -19,10 +19,15 @@ public class Clientes extends javax.swing.JFrame {
     /**
      * Creates new form Clientes
      */
-    public Clientes() {
+    public Clientes(String nombreUsuario) {
         initComponents();
         informacionGeneral();
         holders();
+        lbl_nombreUsuario.setText(nombreUsuario);
+    }
+    
+    public Clientes(){
+        
     }
     
     public void informacionGeneral(){
@@ -542,7 +547,7 @@ public class Clientes extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_eliminarMousePressed
 
     private void lbl_homeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_homeMousePressed
-        Principal principal = new Principal();
+        Principal principal = new Principal(lbl_nombreUsuario.getText());
         this.dispose();
         principal.setVisible(true);
         // TODO add your handling code here:

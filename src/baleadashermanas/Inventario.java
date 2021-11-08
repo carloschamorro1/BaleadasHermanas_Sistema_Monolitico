@@ -20,10 +20,15 @@ public class Inventario extends javax.swing.JFrame {
     /**
      * Creates new form Inventario
      */
-    public Inventario() {
+    public Inventario(String nombreUsuario) {
         initComponents();
         informacionGeneral();
         holders();
+        lbl_nombreUsuario.setText(nombreUsuario);
+    }
+    
+    public Inventario(){
+        
     }
     
     public void informacionGeneral(){
@@ -438,7 +443,7 @@ public class Inventario extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_eliminarMousePressed
 
     private void lbl_homeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_homeMousePressed
-        Principal principal = new Principal();
+        Principal principal = new Principal(lbl_nombreUsuario.getText());
         this.dispose();
         principal.setVisible(true);
         // TODO add your handling code here:
