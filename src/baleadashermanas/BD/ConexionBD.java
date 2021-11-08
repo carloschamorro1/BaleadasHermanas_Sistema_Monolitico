@@ -22,8 +22,7 @@ public class ConexionBD {
        String url = "jdbc:sqlserver://localhost:1433;"
                + "databaseName=baleadashermanas;user=admin;"
                + "password=admin";
-       String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-      
+       String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";     
        try{
        Class.forName(driver);
        con = DriverManager.getConnection(url);
