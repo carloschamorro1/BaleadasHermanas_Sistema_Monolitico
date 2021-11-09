@@ -295,6 +295,15 @@ public class Empleados extends javax.swing.JFrame {
          btn_actualizar.setEnabled(true);
          btn_eliminar.setEnabled(true);
      }
+     
+     public void restablecer(){
+         limpiar();
+         btn_agregar.setEnabled(true);
+         btn_buscar.setEnabled(true);
+         btn_actualizar.setEnabled(false);
+         btn_eliminar.setEnabled(false);
+         txt_primerNombreEmpleado.requestFocus();
+     }
 
 
     /**
@@ -904,6 +913,7 @@ public class Empleados extends javax.swing.JFrame {
                   int res= ps.executeUpdate();
                   if(res >0){
                       JOptionPane.showMessageDialog(this, "Empleado agregado");
+                      restablecer();
                   }
                   
         }catch(Exception e){
@@ -1083,6 +1093,7 @@ public class Empleados extends javax.swing.JFrame {
                       int res= ps.executeUpdate();
                       if(res >0){
                           JOptionPane.showMessageDialog(this, "Empleado actualizado");
+                          restablecer();
                       }
                 }
                 else{
@@ -1124,7 +1135,27 @@ public class Empleados extends javax.swing.JFrame {
 
     private void btn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarActionPerformed
         btn_buscar.setBackground(new Color(40,74,172));
-        JOptionPane.showInputDialog(this, "¿A quien desea eliminar?");
+        String nombreEmpleado = txt_primerNombreEmpleado.getText() + " " + txt_primerApellidoEmpleado.getText();
+         if(JOptionPane.showConfirmDialog(null,"¿Está seguro que desea actualizar el registro del empleado "+nombreEmpleado+"?","Confirmación de actualización",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE
+        )==JOptionPane.YES_OPTION){
+             
+            try{
+            PreparedStatement ps;
+            ResultSet rs;
+            ps=con.prepareStatement("Delete empleado\n" +
+                                    "where dniempleado =?");      
+            ps.setString(1, lbl_Dni.getText());
+            int res= ps.executeUpdate();
+            if(res >0){
+                JOptionPane.showMessageDialog(this, "Empleado eliminado");
+                restablecer();
+                      }
+           
+            }catch(Exception e){
+                
+            }
+            
+         }
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_eliminarActionPerformed
 
