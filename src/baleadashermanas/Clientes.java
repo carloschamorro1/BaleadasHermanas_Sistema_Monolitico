@@ -211,7 +211,7 @@ public class Clientes extends javax.swing.JFrame {
         btn_eliminar.setBackground(new java.awt.Color(205, 63, 145));
         btn_eliminar.setFont(new java.awt.Font("Roboto Black", 0, 24)); // NOI18N
         btn_eliminar.setForeground(new java.awt.Color(255, 255, 255));
-        btn_eliminar.setText("Borrar");
+        btn_eliminar.setText("Eliminar");
         btn_eliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btn_eliminar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {

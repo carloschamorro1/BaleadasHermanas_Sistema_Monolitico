@@ -260,10 +260,15 @@ public class Principal extends javax.swing.JFrame {
 
     private void btn_empleadosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_empleadosMousePressed
         btn_empleados.setBackground(new Color(40,74,172));
-        Empleados empleado = new Empleados(lbl_nombreUsuario.getText());
-        this.dispose();
-        empleado.setVisible(true);
-        // TODO add your handling code here:
+        Empleados empleado = null;
+        try {
+            empleado = new Empleados(lbl_nombreUsuario.getText());
+            this.dispose();
+            empleado.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+                // TODO add your handling code here:
     }//GEN-LAST:event_btn_empleadosMousePressed
 
     private void btn_ordenesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_ordenesMouseEntered

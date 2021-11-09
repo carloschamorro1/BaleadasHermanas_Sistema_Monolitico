@@ -5,10 +5,26 @@
  */
 package baleadashermanas;
 
+import baleadashermanas.BD.ConexionBD;
 import com.placeholder.PlaceHolder;
 import java.awt.Color;
+import java.awt.HeadlessException;
+import java.awt.Toolkit;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.NumberFormat;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
@@ -16,14 +32,18 @@ import javax.swing.JOptionPane;
  */
 public class Empleados extends javax.swing.JFrame {
     int click = 0;
+    Statement stmt = null;
+    Connection con = null;
     /**
      * Creates new form Empleados
      */
-    public Empleados(String nombreUsuario) {
+    public Empleados(String nombreUsuario) throws SQLException {
         initComponents();
         informacionGeneral();
         holders();
         lbl_nombreUsuario.setText(nombreUsuario);
+        this.con = ConexionBD.obtenerConexion();
+        lbl_Dni.setVisible(false);
     }
     
     public Empleados() {
@@ -49,9 +69,233 @@ public class Empleados extends javax.swing.JFrame {
         
         holder = new PlaceHolder(txt_usuarioEmpleado,Color.gray,Color.black,"Ingrese su nombre de usuario",false,"Roboto",25);
         holder = new PlaceHolder(txt_contraseñaEmpleado,Color.gray,Color.black,"Contraseña",false,"Roboto",25);
-        
-        
+           
     }
+    
+    public void rellenar(){
+        String input = "";
+        input = JOptionPane.showInputDialog(this, "¿A quien desea buscar?","Consulta de empleado",JOptionPane.QUESTION_MESSAGE);
+        if(input == null){
+                JOptionPane.showMessageDialog(this,"La acción fue cancelada","¡AVISO!",JOptionPane.INFORMATION_MESSAGE);
+        }
+        else if(input.equals("")){ 
+            JOptionPane.showMessageDialog(this,"Favor de ingresar los datos del empleado\n que desea buscar","¡AVISO!",JOptionPane.INFORMATION_MESSAGE);
+        }
+        else{
+            String sql = "select * from empleado\n" +
+            "where dniempleado = '"+input+"' or primer_apellido_empleado ='"+input+"' or primer_apellido_empleado ='"+input+"'";     
+            try {
+                stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(sql);
+                if(rs.next()){
+                    Locale locale = new Locale("es", "HN"); 
+                    NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+                    txt_primerNombreEmpleado.setText(rs.getString("primer_nombre_empleado"));
+                    txt_segundoNombreEmpleado.setText(rs.getString("segundo_nombre_empleado"));
+                    txt_primerApellidoEmpleado.setText(rs.getString("primer_apellido_empleado"));
+                    txt_segundoApellidoEmpleado.setText(rs.getString("segundo_apellido_empleado"));
+                    txt_telefonoEmpleado.setText(rs.getString("telefono_empleado"));
+                    txt_emailEmpleado.setText(rs.getString("email_empleado"));
+                    txt_dniEmpleado.setText(rs.getString("dniempleado"));
+                    txt_usuarioEmpleado.setText(rs.getString("usuario_empleado")); 
+                    txt_contraseñaEmpleado.setText("");
+                    lbl_Dni.setText(rs.getString("dniempleado"));
+                    colorear();
+                    habilitarAccionesBuscar();
+                }
+                else{
+                    JOptionPane.showMessageDialog(null,"¡No se encuentra el empleado! Por favor verifique sí, lo escribio correctamente");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
+            }   
+            
+              }
+    }
+    
+    public void limpiar(){
+        txt_primerNombreEmpleado.setText("");
+        txt_segundoNombreEmpleado.setText("");
+        txt_primerApellidoEmpleado.setText("");
+        txt_segundoApellidoEmpleado.setText("");
+        txt_telefonoEmpleado.setText("");
+        txt_emailEmpleado.setText("");
+        txt_dniEmpleado.setText("");
+        txt_usuarioEmpleado.setText("");
+        txt_contraseñaEmpleado.setText("");
+    }
+    
+    public void colorear(){
+        txt_primerNombreEmpleado.setForeground(Color.black);
+        txt_segundoNombreEmpleado.setForeground(Color.black);
+        txt_primerApellidoEmpleado.setForeground(Color.black);
+        txt_segundoApellidoEmpleado.setForeground(Color.black);
+        txt_telefonoEmpleado.setForeground(Color.black);
+        txt_emailEmpleado.setForeground(Color.black);
+        txt_dniEmpleado.setForeground(Color.black);
+        txt_usuarioEmpleado.setForeground(Color.black);
+        txt_contraseñaEmpleado.setForeground(Color.black);
+    }
+    
+    public boolean estaVacio(){
+        if(txt_primerNombreEmpleado.getText().equals("Ingrese su primer nombre")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el primer nombre del empleado","Ingrese el primer nombre",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_segundoNombreEmpleado.getText().equals("Ingrese su segundo nombre")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el segundo nombre del empleado","Ingrese el segundo nombre",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_primerApellidoEmpleado.getText().equals("Ingrese su primer apellido")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el primer apellido del empleado","Ingrese el primer apellido",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_primerApellidoEmpleado.getText().equals("Ingrese su segundo apellido")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el segundo apellido del empleado","Ingrese el segundo apellido",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_telefonoEmpleado.getText().equals("Ingrese su número de teléfono")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el teléfono del enpleado","Ingrese el teléfono",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_emailEmpleado.getText().equals("Ingrese su correo eléctronico")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el email del enpleado","Ingrese el email",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_dniEmpleado.getText().equals("Ingrese su DNI")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el DNI del enpleado","Ingrese el DNI",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_usuarioEmpleado.getText().equals("Ingrese su nombre de usuario")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el nombre de usuario del empleado","Ingrese el nombre de usuario",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_contraseñaEmpleado.getText().equals("Contraseña")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese la contraseña del empleado","Ingrese la contraseña del empleado",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public boolean estaVacioActualizar(){
+        if(txt_primerNombreEmpleado.getText().equals("Ingrese su primer nombre")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el primer nombre del empleado","Ingrese el primer nombre",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_segundoNombreEmpleado.getText().equals("Ingrese su segundo nombre")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el segundo nombre del empleado","Ingrese el segundo nombre",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_primerApellidoEmpleado.getText().equals("Ingrese su primer apellido")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el primer apellido del empleado","Ingrese el primer apellido",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_primerApellidoEmpleado.getText().equals("Ingrese su segundo apellido")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el segundo apellido del empleado","Ingrese el segundo apellido",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_telefonoEmpleado.getText().equals("Ingrese su número de teléfono")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el teléfono del enpleado","Ingrese el teléfono",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_emailEmpleado.getText().equals("Ingrese su correo eléctronico")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el email del enpleado","Ingrese el email",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_dniEmpleado.getText().equals("Ingrese su DNI")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el DNI del enpleado","Ingrese el DNI",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if(txt_usuarioEmpleado.getText().equals("Ingrese su nombre de usuario")){
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el nombre de usuario del empleado","Ingrese el nombre de usuario",JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }    
+        return false;
+    }
+    
+    public boolean existeUsuario(){
+        try {
+            Statement st = con.createStatement();
+            String sql = "Select usuario_empleado from empleado where usuario_empleado = '"+txt_usuarioEmpleado.getText()+"'";
+            ResultSet rs = st.executeQuery(sql);
+            if(rs.next()){
+                JOptionPane.showMessageDialog(null, "Ya existe el nombre de usuario: "+txt_usuarioEmpleado.getText()+" ", "Nombre de usuario ¡Ya existe!", JOptionPane.INFORMATION_MESSAGE);
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public boolean existeEmpleado(){
+        try {
+            Statement st = con.createStatement();
+            String sql = "Select dniempleado from empleado where dniempleado = '"+txt_dniEmpleado.getText()+"'";
+            ResultSet rs = st.executeQuery(sql);
+            if(rs.next()){
+                JOptionPane.showMessageDialog(null, "El DNI: "+txt_dniEmpleado.getText()+" ya existe", "Este DNI ¡Ya existe!", JOptionPane.INFORMATION_MESSAGE);
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+      
+     private boolean validarLongitudTelefono(JTextField texto, int longitud){
+       if(texto.getText().length() == longitud){
+                Pattern pattern = Pattern.compile("[23789]");
+                Matcher matcher=pattern.matcher(texto.getText().substring(0,1));
+                if(matcher.matches()){ 
+                        return true;
+                    }else{
+                        JOptionPane.showMessageDialog(null, "El número de teléfono debe comenzar con: 2,3,7,8 o 9");
+                        return false;
+                    } 
+       }
+        else{
+       }
+       JOptionPane.showMessageDialog(null, "El número de teléfono debe ser de 8 dígitos", "Longitud del número de telefono",JOptionPane.INFORMATION_MESSAGE);
+       return false;
+    }
+     
+     private boolean validarDni(String identidad){
+        String id = identidad.substring(0, 1);
+        
+        if(identidad.length() < 13){
+             JOptionPane.showMessageDialog(null, "El DNI es de 13 dígitos, usted ha ingresado solamente "+identidad.length()+" dígitos.", "DNI muy corto", JOptionPane.ERROR_MESSAGE);
+        }
+        if(identidad.length() == 13){
+             if("0".equals(id)){
+                 return true;
+             }
+             else if("1".equals(id)){
+                 return true;
+             }
+             else{
+                 JOptionPane.showMessageDialog(null, "El DNI sólo puede comenzar con 0 o 1 ", "Error en campo DNI", JOptionPane.ERROR_MESSAGE);
+                 return false;
+             }
+        }
+        else{
+           return false; 
+        }    
+    }
+     
+     public void habilitarAccionesBuscar(){
+         btn_agregar.setEnabled(false);
+         btn_actualizar.setEnabled(true);
+         btn_eliminar.setEnabled(true);
+     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -92,6 +336,7 @@ public class Empleados extends javax.swing.JFrame {
         lbl_dniEmpleado = new javax.swing.JLabel();
         lbl_nombreUsuarioEmpleado = new javax.swing.JLabel();
         lbl_vercontraseña = new javax.swing.JLabel();
+        lbl_Dni = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -108,11 +353,21 @@ public class Empleados extends javax.swing.JFrame {
                 txt_primerNombreEmpleadoActionPerformed(evt);
             }
         });
+        txt_primerNombreEmpleado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_primerNombreEmpleadoKeyTyped(evt);
+            }
+        });
 
         txt_segundoNombreEmpleado.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
         txt_segundoNombreEmpleado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_segundoNombreEmpleadoActionPerformed(evt);
+            }
+        });
+        txt_segundoNombreEmpleado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_segundoNombreEmpleadoKeyTyped(evt);
             }
         });
 
@@ -122,11 +377,21 @@ public class Empleados extends javax.swing.JFrame {
                 txt_primerApellidoEmpleadoActionPerformed(evt);
             }
         });
+        txt_primerApellidoEmpleado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_primerApellidoEmpleadoKeyTyped(evt);
+            }
+        });
 
         txt_segundoApellidoEmpleado.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
         txt_segundoApellidoEmpleado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_segundoApellidoEmpleadoActionPerformed(evt);
+            }
+        });
+        txt_segundoApellidoEmpleado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_segundoApellidoEmpleadoKeyTyped(evt);
             }
         });
 
@@ -136,11 +401,21 @@ public class Empleados extends javax.swing.JFrame {
                 txt_telefonoEmpleadoActionPerformed(evt);
             }
         });
+        txt_telefonoEmpleado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_telefonoEmpleadoKeyTyped(evt);
+            }
+        });
 
         txt_emailEmpleado.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
         txt_emailEmpleado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_emailEmpleadoActionPerformed(evt);
+            }
+        });
+        txt_emailEmpleado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_emailEmpleadoKeyTyped(evt);
             }
         });
 
@@ -150,11 +425,21 @@ public class Empleados extends javax.swing.JFrame {
                 txt_dniEmpleadoActionPerformed(evt);
             }
         });
+        txt_dniEmpleado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_dniEmpleadoKeyTyped(evt);
+            }
+        });
 
         txt_usuarioEmpleado.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
         txt_usuarioEmpleado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_usuarioEmpleadoActionPerformed(evt);
+            }
+        });
+        txt_usuarioEmpleado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_usuarioEmpleadoKeyTyped(evt);
             }
         });
 
@@ -183,6 +468,7 @@ public class Empleados extends javax.swing.JFrame {
         btn_actualizar.setForeground(new java.awt.Color(255, 255, 255));
         btn_actualizar.setText("Actualizar");
         btn_actualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_actualizar.setEnabled(false);
         btn_actualizar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btn_actualizarMouseEntered(evt);
@@ -192,6 +478,11 @@ public class Empleados extends javax.swing.JFrame {
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btn_actualizarMousePressed(evt);
+            }
+        });
+        btn_actualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_actualizarActionPerformed(evt);
             }
         });
 
@@ -215,8 +506,9 @@ public class Empleados extends javax.swing.JFrame {
         btn_eliminar.setBackground(new java.awt.Color(205, 63, 145));
         btn_eliminar.setFont(new java.awt.Font("Roboto Black", 0, 24)); // NOI18N
         btn_eliminar.setForeground(new java.awt.Color(255, 255, 255));
-        btn_eliminar.setText("Borrar");
+        btn_eliminar.setText("Eliminar");
         btn_eliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_eliminar.setEnabled(false);
         btn_eliminar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btn_eliminarMouseEntered(evt);
@@ -226,6 +518,11 @@ public class Empleados extends javax.swing.JFrame {
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btn_eliminarMousePressed(evt);
+            }
+        });
+        btn_eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_eliminarActionPerformed(evt);
             }
         });
 
@@ -251,6 +548,11 @@ public class Empleados extends javax.swing.JFrame {
         txt_contraseñaEmpleado.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 txt_contraseñaEmpleadoMousePressed(evt);
+            }
+        });
+        txt_contraseñaEmpleado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_contraseñaEmpleadoKeyTyped(evt);
             }
         });
 
@@ -334,47 +636,45 @@ public class Empleados extends javax.swing.JFrame {
                 .addComponent(lbl_home)
                 .addGap(21, 21, 21))
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(90, 90, 90)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lbl_segundoNombreEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_telefonoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_primerApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_segundoApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_primerNombreEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txt_segundoApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_primerApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_telefonoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_segundoNombreEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_primerNombreEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lbl_usuario)
-                        .addGap(18, 18, 18)
-                        .addComponent(lbl_nombreUsuario))
+                        .addGap(123, 123, 123)
+                        .addComponent(lbl_datosInicioEmpleado)
+                        .addGap(0, 158, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(90, 90, 90)
+                        .addGap(29, 29, 29)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lbl_segundoNombreEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbl_telefonoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbl_primerApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbl_segundoApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbl_primerNombreEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txt_segundoApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txt_primerApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txt_telefonoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txt_segundoNombreEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txt_primerNombreEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lbl_contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_emailEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_dniEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_nombreUsuarioEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(29, 29, 29)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(lbl_contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lbl_emailEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lbl_dniEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lbl_nombreUsuarioEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(txt_usuarioEmpleado, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
-                                    .addComponent(txt_dniEmpleado)
                                     .addComponent(txt_emailEmpleado)
                                     .addComponent(txt_contraseñaEmpleado))
                                 .addGap(18, 18, 18)
                                 .addComponent(lbl_vercontraseña, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(123, 123, 123)
-                                .addComponent(lbl_datosInicioEmpleado)
-                                .addGap(0, 158, Short.MAX_VALUE)))))
+                                .addGap(2, 2, 2)
+                                .addComponent(txt_dniEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(61, 61, 61))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(343, 343, 343)
@@ -386,6 +686,17 @@ public class Empleados extends javax.swing.JFrame {
                     .addComponent(btn_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lbl_usuario)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(lbl_nombreUsuario))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lbl_Dni)
+                        .addGap(198, 198, 198))))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(492, 492, 492)
@@ -406,7 +717,9 @@ public class Empleados extends javax.swing.JFrame {
                             .addComponent(lbl_home, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(21, 21, 21)
-                        .addComponent(lbl_usuario, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbl_Dni)
+                            .addComponent(lbl_usuario, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(17, 17, 17)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -543,7 +856,60 @@ public class Empleados extends javax.swing.JFrame {
 
     private void btn_agregarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_agregarMousePressed
         btn_agregar.setBackground(new Color(40,74,172));
-        JOptionPane.showMessageDialog(this, "Empleado agregado");
+        
+        try{
+            if(estaVacio()){
+                return;
+            }
+
+            if(existeEmpleado()){
+                return;
+            }
+
+            if(existeUsuario()){
+                return;
+            }
+
+            if(!validarLongitudTelefono(txt_telefonoEmpleado,8)){
+                return;
+            }
+
+             if(!validarDni(txt_dniEmpleado.getText())){
+                return;
+
+            }
+             
+            char[] c = txt_contraseñaEmpleado.getPassword();
+            String contraseñaFinal ="";
+            for (int i = 0; i < c.length; i++) {
+                contraseñaFinal  += String.valueOf(c[i]);
+            }
+
+            String contraseñaEncriptada=DigestUtils.md5Hex(contraseñaFinal);
+            PreparedStatement ps;
+            ResultSet rs;
+        
+          ps=con.prepareStatement("INSERT INTO empleado (primer_nombre_empleado, segundo_nombre_empleado, primer_apellido_empleado, segundo_apellido_empleado,"
+                  + "telefono_empleado, email_empleado,dniempleado,usuario_empleado,contraseña_empleado)"
+                  + "VALUES(?,?,?,?,?,?,?,?,?)");
+                  ps.setString(1, txt_primerNombreEmpleado.getText());
+                  ps.setString(2, txt_segundoNombreEmpleado.getText());
+                  ps.setString(3, txt_primerApellidoEmpleado.getText());
+                  ps.setString(4, txt_segundoApellidoEmpleado.getText());
+                  ps.setString(5, txt_telefonoEmpleado.getText());
+                  ps.setString(6, txt_emailEmpleado.getText());
+                  ps.setString(7, txt_dniEmpleado.getText());
+                  ps.setString(8, txt_usuarioEmpleado.getText());
+                  ps.setString(9, contraseñaEncriptada);
+                  int res= ps.executeUpdate();
+                  if(res >0){
+                      JOptionPane.showMessageDialog(this, "Empleado agregado");
+                  }
+                  
+        }catch(Exception e){
+            
+        }
+        
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_agregarMousePressed
 
@@ -558,8 +924,7 @@ public class Empleados extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_actualizarMouseExited
 
     private void btn_actualizarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_actualizarMousePressed
-        btn_actualizar.setBackground(new Color(40,74,172));
-        JOptionPane.showMessageDialog(this, "Empleado actualizado");
+       
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_actualizarMousePressed
 
@@ -575,7 +940,7 @@ public class Empleados extends javax.swing.JFrame {
 
     private void btn_buscarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_buscarMousePressed
         btn_buscar.setBackground(new Color(40,74,172));
-        JOptionPane.showInputDialog(this, "¿A quien desea buscar?");
+        rellenar();
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_buscarMousePressed
 
@@ -590,8 +955,7 @@ public class Empleados extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_eliminarMouseExited
 
     private void btn_eliminarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_eliminarMousePressed
-        btn_buscar.setBackground(new Color(40,74,172));
-        JOptionPane.showInputDialog(this, "¿A quien desea eliminar?");
+      
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_eliminarMousePressed
 
@@ -665,6 +1029,333 @@ public class Empleados extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_contraseñaMousePressed
 
+    private void btn_actualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_actualizarActionPerformed
+        btn_actualizar.setBackground(new Color(40,74,172));
+        
+        String nombreEmpleado = txt_primerNombreEmpleado.getText() + " " + txt_primerApellidoEmpleado.getText();
+         if(JOptionPane.showConfirmDialog(null,"¿Está seguro que desea actualizar el registro del empleado "+nombreEmpleado+"?","Confirmación de actualización",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE
+        )==JOptionPane.YES_OPTION){
+            try{
+                if(estaVacioActualizar()){
+                    return;
+                }
+
+                if(!validarLongitudTelefono(txt_telefonoEmpleado,8)){
+                    return;
+                }
+
+                 if(!validarDni(txt_dniEmpleado.getText())){
+                    return;
+
+                }
+
+                char[] c = txt_contraseñaEmpleado.getPassword();
+                String contraseñaFinal ="";
+                for (int i = 0; i < c.length; i++) {
+                    contraseñaFinal  += String.valueOf(c[i]);
+                }
+
+                String contraseñaEncriptada=DigestUtils.md5Hex(contraseñaFinal);
+                
+                PreparedStatement ps;
+                ResultSet rs;
+                int telefono = Integer.parseInt(txt_telefonoEmpleado.getText());
+                if(contraseñaFinal.equals("")){
+                     ps=con.prepareStatement("Update empleado\n" +
+                                            "Set primer_nombre_empleado = ?,\n" +
+                                            "segundo_nombre_empleado = ?,\n" +
+                                            "primer_apellido_empleado = ?,\n" +
+                                            "segundo_apellido_empleado = ?," +
+                                            "telefono_empleado =?,\n" +
+                                            "email_empleado = ?,\n" +
+                                            "dniempleado = ?,\n" +
+                                            "usuario_empleado =?\n" +
+                                            "where dniempleado =?");
+                      ps.setString(1, txt_primerNombreEmpleado.getText());
+                      ps.setString(2, txt_segundoNombreEmpleado.getText());
+                      ps.setString(3, txt_primerApellidoEmpleado.getText());
+                      ps.setString(4, txt_segundoApellidoEmpleado.getText());                 
+                      ps.setInt(5, telefono);
+                      ps.setString(6, txt_emailEmpleado.getText());
+                      ps.setString(7, txt_dniEmpleado.getText());
+                      ps.setString(8, txt_usuarioEmpleado.getText());
+                      ps.setString(9, lbl_Dni.getText());
+                      int res= ps.executeUpdate();
+                      if(res >0){
+                          JOptionPane.showMessageDialog(this, "Empleado actualizado");
+                      }
+                }
+                else{
+                    
+                    ps=con.prepareStatement("Update empleado\n" +
+                                            "Set primer_nombre_empleado = ?,\n" +
+                                            "segundo_nombre_empleado = ?,\n" +
+                                            "primer_apellido_empleado = ?,\n" +
+                                            "segundo_apellido_empleado = ?," +
+                                            "telefono_empleado = ?,\n" +
+                                            "email_empleado = ?,\n" +
+                                            "dniempleado = ?,\n" +
+                                            "usuario_empleado = ?,\n" +
+                                            "contraseña_empleado = ?\n" +
+                                            "where dniempleado =?");
+                      ps.setString(1, txt_primerNombreEmpleado.getText());
+                      ps.setString(2, txt_segundoNombreEmpleado.getText());
+                      ps.setString(3, txt_primerApellidoEmpleado.getText());
+                      ps.setString(4, txt_segundoApellidoEmpleado.getText());                 
+                      ps.setInt(5, telefono);
+                      ps.setString(6, txt_emailEmpleado.getText());
+                      ps.setString(7, txt_dniEmpleado.getText());
+                      ps.setString(8, txt_usuarioEmpleado.getText());
+                      ps.setString(9, contraseñaEncriptada);
+                      ps.setString(10, lbl_Dni.getText());
+                      int res= ps.executeUpdate();
+                      if(res >0){
+                          JOptionPane.showMessageDialog(this, "Empleado actualizado");
+                      }
+                }
+
+            }catch(HeadlessException | SQLException e){
+
+            }
+         }
+        
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_actualizarActionPerformed
+
+    private void btn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarActionPerformed
+        btn_buscar.setBackground(new Color(40,74,172));
+        JOptionPane.showInputDialog(this, "¿A quien desea eliminar?");
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_eliminarActionPerformed
+
+    private void txt_primerNombreEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_primerNombreEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+   
+            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
+                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
+                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+        return;
+        }
+         if(evt.getKeyChar() == 32){
+             if(txt_primerNombreEmpleado.getText().length() == 0){
+                 evt.consume();
+                 Toolkit.getDefaultToolkit().beep();
+                 return;
+             }
+             if(txt_primerNombreEmpleado.getText().substring(txt_primerNombreEmpleado.getText().length() - 1).equals(" ")){
+                 evt.consume();
+                 Toolkit.getDefaultToolkit().beep();
+             }
+             return; 
+         }
+        if(txt_primerNombreEmpleado.getText().length() >=40){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
+        }
+        
+        if(Character.isDigit(a) || !Character.isLetterOrDigit(a) ){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo letras");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_primerNombreEmpleadoKeyTyped
+
+    private void txt_segundoNombreEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_segundoNombreEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+   
+            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
+                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
+                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+        return;
+        }
+         if(evt.getKeyChar() == 32){
+             if(txt_segundoNombreEmpleado.getText().length() == 0){
+                 evt.consume();
+                 Toolkit.getDefaultToolkit().beep();
+                 return;
+             }
+             if(txt_segundoNombreEmpleado.getText().substring(txt_segundoNombreEmpleado.getText().length() - 1).equals(" ")){
+                 evt.consume();
+                 Toolkit.getDefaultToolkit().beep();
+             }
+             return; 
+         }
+        if(txt_segundoNombreEmpleado.getText().length() >=40){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
+        }
+        
+        if(Character.isDigit(a) || !Character.isLetterOrDigit(a) ){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo letras");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_segundoNombreEmpleadoKeyTyped
+
+    private void txt_primerApellidoEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_primerApellidoEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+   
+            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
+                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
+                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+        return;
+        }
+         if(evt.getKeyChar() == 32){
+             if(txt_primerApellidoEmpleado.getText().length() == 0){
+                 evt.consume();
+                 Toolkit.getDefaultToolkit().beep();
+                 return;
+             }
+             if(txt_primerApellidoEmpleado.getText().substring(txt_primerApellidoEmpleado.getText().length() - 1).equals(" ")){
+                 evt.consume();
+                 Toolkit.getDefaultToolkit().beep();
+             }
+             return; 
+         }
+        if(txt_primerApellidoEmpleado.getText().length() >=40){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
+        }
+        
+        if(Character.isDigit(a) || !Character.isLetterOrDigit(a) ){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo letras");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_primerApellidoEmpleadoKeyTyped
+
+    private void txt_segundoApellidoEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_segundoApellidoEmpleadoKeyTyped
+         char a=evt.getKeyChar();
+   
+            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
+                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
+                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+        return;
+        }
+         if(evt.getKeyChar() == 32){
+             if(txt_segundoApellidoEmpleado.getText().length() == 0){
+                 evt.consume();
+                 Toolkit.getDefaultToolkit().beep();
+                 return;
+             }
+             if(txt_segundoApellidoEmpleado.getText().substring(txt_segundoApellidoEmpleado.getText().length() - 1).equals(" ")){
+                 evt.consume();
+                 Toolkit.getDefaultToolkit().beep();
+             }
+             return; 
+         }
+        if(txt_segundoApellidoEmpleado.getText().length() >=40){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
+        }
+        
+        if(Character.isDigit(a) || !Character.isLetterOrDigit(a) ){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo letras");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_segundoApellidoEmpleadoKeyTyped
+
+    private void txt_telefonoEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_telefonoEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
+                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
+                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+        return;
+        }
+        if(txt_telefonoEmpleado.getText().length() >=8){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de dígitos admitidos");
+        }
+     
+        if(Character.isLetter(a) || !Character.isLetterOrDigit(a)){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo números");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_telefonoEmpleadoKeyTyped
+
+    private void txt_dniEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_dniEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
+                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
+                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+        return;
+        }
+        if(txt_dniEmpleado.getText().length() >=13){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de dígitos admitidos");
+        }
+        if(Character.isLetter(a) || !Character.isLetterOrDigit(a)){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Solo números");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_dniEmpleadoKeyTyped
+
+    private void txt_emailEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_emailEmpleadoKeyTyped
+         char a=evt.getKeyChar();
+            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
+                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
+                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+        return;
+        }
+        if(txt_dniEmpleado.getText().length() >=50){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_emailEmpleadoKeyTyped
+
+    private void txt_usuarioEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_usuarioEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
+                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
+                 || evt.getKeyChar() == 46 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+        return;
+        }
+        
+        if(txt_usuarioEmpleado.getText().length() >=25){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
+        } 
+        if(!Character.isLetterOrDigit(a) ){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo letras y numeros");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_usuarioEmpleadoKeyTyped
+
+    private void txt_contraseñaEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_contraseñaEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
+                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
+                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+        return;
+            }
+            
+        if(evt.getKeyChar() == 32 || evt.getKeyChar() == 124){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_contraseñaEmpleadoKeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -707,6 +1398,7 @@ public class Empleados extends javax.swing.JFrame {
     private javax.swing.JButton btn_eliminar;
     private javax.swing.JPanel jPanel1;
     private keeptoo.KGradientPanel kGradientPanel1;
+    private javax.swing.JLabel lbl_Dni;
     private javax.swing.JLabel lbl_contraseña;
     private javax.swing.JLabel lbl_datosInicioEmpleado;
     private javax.swing.JLabel lbl_dniEmpleado;

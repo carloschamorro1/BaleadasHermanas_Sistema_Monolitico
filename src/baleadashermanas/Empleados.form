@@ -82,60 +82,58 @@
                       <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
+                      <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="lbl_segundoNombreEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
+                          <Component id="lbl_telefonoEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
+                          <Component id="lbl_primerApellidoEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
+                          <Component id="lbl_segundoApellidoEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
+                          <Component id="lbl_primerNombreEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="lbl_usuario" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="lbl_nombreUsuario" min="-2" max="-2" attributes="0"/>
+                          <Component id="txt_segundoApellidoEmpleado" min="-2" pref="434" max="-2" attributes="0"/>
+                          <Component id="txt_primerApellidoEmpleado" min="-2" pref="434" max="-2" attributes="0"/>
+                          <Component id="txt_telefonoEmpleado" min="-2" pref="434" max="-2" attributes="0"/>
+                          <Component id="txt_segundoNombreEmpleado" min="-2" pref="434" max="-2" attributes="0"/>
+                          <Component id="txt_primerNombreEmpleado" min="-2" pref="434" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="123" max="-2" attributes="0"/>
+                              <Component id="lbl_datosInicioEmpleado" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="158" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="lbl_segundoNombreEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
-                                  <Component id="lbl_telefonoEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
-                                  <Component id="lbl_primerApellidoEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
-                                  <Component id="lbl_segundoApellidoEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
-                                  <Component id="lbl_primerNombreEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="txt_segundoApellidoEmpleado" min="-2" pref="434" max="-2" attributes="0"/>
-                                  <Component id="txt_primerApellidoEmpleado" min="-2" pref="434" max="-2" attributes="0"/>
-                                  <Component id="txt_telefonoEmpleado" min="-2" pref="434" max="-2" attributes="0"/>
-                                  <Component id="txt_segundoNombreEmpleado" min="-2" pref="434" max="-2" attributes="0"/>
-                                  <Component id="txt_primerNombreEmpleado" min="-2" pref="434" max="-2" attributes="0"/>
+                                  <Component id="lbl_contraseña" min="-2" pref="32" max="-2" attributes="0"/>
+                                  <Component id="lbl_emailEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
+                                  <Component id="lbl_dniEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
+                                  <Component id="lbl_nombreUsuarioEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
                               </Group>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="1" attributes="0">
-                                          <Component id="lbl_contraseña" min="-2" pref="32" max="-2" attributes="0"/>
-                                          <Component id="lbl_emailEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
-                                          <Component id="lbl_dniEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
-                                          <Component id="lbl_nombreUsuarioEmpleado" min="-2" pref="32" max="-2" attributes="0"/>
-                                      </Group>
+                                  <Group type="102" attributes="0">
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                           <Component id="txt_usuarioEmpleado" alignment="0" pref="434" max="32767" attributes="0"/>
-                                          <Component id="txt_dniEmpleado" alignment="0" max="32767" attributes="0"/>
                                           <Component id="txt_emailEmpleado" alignment="0" max="32767" attributes="0"/>
                                           <Component id="txt_contraseñaEmpleado" alignment="0" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="lbl_vercontraseña" max="32767" attributes="0"/>
                                   </Group>
-                                  <Group type="102" attributes="0">
-                                      <EmptySpace min="-2" pref="123" max="-2" attributes="0"/>
-                                      <Component id="lbl_datosInicioEmpleado" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="158" max="32767" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                                      <Component id="txt_dniEmpleado" min="-2" pref="434" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
                       </Group>
                       <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="343" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="btn_agregar" linkSize="3" min="-2" pref="250" max="-2" attributes="0"/>
@@ -147,6 +145,21 @@
                           <Component id="btn_buscar" linkSize="3" min="-2" pref="255" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="lbl_usuario" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="lbl_nombreUsuario" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="lbl_Dni" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="198" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
                   <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
@@ -161,7 +174,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Component id="lbl_nombreUsuario" min="-2" pref="49" max="-2" attributes="0"/>
@@ -170,7 +183,10 @@
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-                              <Component id="lbl_usuario" min="-2" pref="76" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="lbl_Dni" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lbl_usuario" min="-2" pref="76" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                       <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
@@ -259,6 +275,7 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_primerNombreEmpleadoActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_primerNombreEmpleadoKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txt_segundoNombreEmpleado">
@@ -269,6 +286,7 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_segundoNombreEmpleadoActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_segundoNombreEmpleadoKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txt_primerApellidoEmpleado">
@@ -279,6 +297,7 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_primerApellidoEmpleadoActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_primerApellidoEmpleadoKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txt_segundoApellidoEmpleado">
@@ -289,6 +308,7 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_segundoApellidoEmpleadoActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_segundoApellidoEmpleadoKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txt_telefonoEmpleado">
@@ -299,6 +319,7 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_telefonoEmpleadoActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_telefonoEmpleadoKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txt_emailEmpleado">
@@ -309,6 +330,7 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_emailEmpleadoActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_emailEmpleadoKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txt_dniEmpleado">
@@ -319,6 +341,7 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_dniEmpleadoActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_dniEmpleadoKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txt_usuarioEmpleado">
@@ -329,6 +352,7 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_usuarioEmpleadoActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_usuarioEmpleadoKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_nombreUsuario">
@@ -376,11 +400,13 @@
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_actualizarMouseEntered"/>
                 <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_actualizarMouseExited"/>
                 <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_actualizarMousePressed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_actualizarActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btn_buscar">
@@ -416,15 +442,17 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Borrar"/>
+                <Property name="text" type="java.lang.String" value="Eliminar"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_eliminarMouseEntered"/>
                 <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_eliminarMouseExited"/>
                 <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_eliminarMousePressed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_eliminarActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_home">
@@ -475,6 +503,7 @@
               </Properties>
               <Events>
                 <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="txt_contrase&#xf1;aEmpleadoMousePressed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_contrase&#xf1;aEmpleadoKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_segundoNombreEmpleado">
@@ -579,6 +608,8 @@
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lbl_vercontrase&#xf1;aMouseClicked"/>
               </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lbl_Dni">
             </Component>
           </SubComponents>
         </Container>

@@ -618,7 +618,7 @@ public class Orden extends javax.swing.JFrame {
         btn_borrar.setBackground(new java.awt.Color(205, 63, 145));
         btn_borrar.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
         btn_borrar.setForeground(new java.awt.Color(255, 255, 255));
-        btn_borrar.setText("Borrar");
+        btn_borrar.setText("Eliminar");
         btn_borrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout jpn_pagoLayout = new javax.swing.GroupLayout(jpn_pago);
