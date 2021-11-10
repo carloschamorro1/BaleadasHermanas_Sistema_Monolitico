@@ -301,9 +301,15 @@ public class Principal extends javax.swing.JFrame {
 
     private void btn_clientesMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_clientesMousePressed
         btn_clientes.setBackground(new Color(40,74,172));
-        Clientes cliente = new Clientes(lbl_nombreUsuario.getText());
-        this.dispose();
-        cliente.setVisible(true);
+        Clientes cliente;
+        try {
+            cliente = new Clientes(lbl_nombreUsuario.getText());
+            this.dispose();
+            cliente.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_clientesMousePressed
 

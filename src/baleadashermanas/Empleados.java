@@ -36,6 +36,8 @@ public class Empleados extends javax.swing.JFrame {
     Connection con = null;
     /**
      * Creates new form Empleados
+     * @param nombreUsuario
+     * @throws java.sql.SQLException
      */
     public Empleados(String nombreUsuario) throws SQLException {
         initComponents();
@@ -50,13 +52,13 @@ public class Empleados extends javax.swing.JFrame {
       
     }
     
-    public void informacionGeneral(){
+    public final void informacionGeneral(){
         this.setTitle("Empleados");
         this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon(getClass().getResource("../Img/Titulo.png")).getImage());
     }
     
-    public void holders(){
+    public final void holders(){
         PlaceHolder holder;
         holder = new PlaceHolder(txt_primerNombreEmpleado,Color.gray,Color.black,"Ingrese su primer nombre",false,"Roboto",25);
         holder = new PlaceHolder(txt_segundoNombreEmpleado,Color.gray,Color.black,"Ingrese su segundo nombre",false,"Roboto",25);
@@ -83,7 +85,7 @@ public class Empleados extends javax.swing.JFrame {
         }
         else{
             String sql = "select * from empleado\n" +
-            "where dniempleado = '"+input+"' or primer_apellido_empleado ='"+input+"' or primer_apellido_empleado ='"+input+"'";     
+            "where dniempleado = '"+input+"' or primer_nombre_empleado ='"+input+"' or primer_apellido_empleado ='"+input+"'";     
             try {
                 stmt = con.createStatement();
                 ResultSet rs = stmt.executeQuery(sql);
@@ -155,15 +157,15 @@ public class Empleados extends javax.swing.JFrame {
             return true;
         }
         if(txt_telefonoEmpleado.getText().equals("Ingrese su número de teléfono")){
-            JOptionPane.showMessageDialog(this,"Por favor ingrese el teléfono del enpleado","Ingrese el teléfono",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el teléfono del empleado","Ingrese el teléfono",JOptionPane.INFORMATION_MESSAGE);
             return true;
         }
         if(txt_emailEmpleado.getText().equals("Ingrese su correo eléctronico")){
-            JOptionPane.showMessageDialog(this,"Por favor ingrese el email del enpleado","Ingrese el email",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el email del empleado","Ingrese el email",JOptionPane.INFORMATION_MESSAGE);
             return true;
         }
         if(txt_dniEmpleado.getText().equals("Ingrese su DNI")){
-            JOptionPane.showMessageDialog(this,"Por favor ingrese el DNI del enpleado","Ingrese el DNI",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el DNI del empleado","Ingrese el DNI",JOptionPane.INFORMATION_MESSAGE);
             return true;
         }
         if(txt_usuarioEmpleado.getText().equals("Ingrese su nombre de usuario")){
@@ -196,15 +198,15 @@ public class Empleados extends javax.swing.JFrame {
             return true;
         }
         if(txt_telefonoEmpleado.getText().equals("Ingrese su número de teléfono")){
-            JOptionPane.showMessageDialog(this,"Por favor ingrese el teléfono del enpleado","Ingrese el teléfono",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el teléfono del empleado","Ingrese el teléfono",JOptionPane.INFORMATION_MESSAGE);
             return true;
         }
         if(txt_emailEmpleado.getText().equals("Ingrese su correo eléctronico")){
-            JOptionPane.showMessageDialog(this,"Por favor ingrese el email del enpleado","Ingrese el email",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el email del empleado","Ingrese el email",JOptionPane.INFORMATION_MESSAGE);
             return true;
         }
         if(txt_dniEmpleado.getText().equals("Ingrese su DNI")){
-            JOptionPane.showMessageDialog(this,"Por favor ingrese el DNI del enpleado","Ingrese el DNI",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,"Por favor ingrese el DNI del empleado","Ingrese el DNI",JOptionPane.INFORMATION_MESSAGE);
             return true;
         }
         if(txt_usuarioEmpleado.getText().equals("Ingrese su nombre de usuario")){
@@ -467,8 +469,10 @@ public class Empleados extends javax.swing.JFrame {
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btn_agregarMouseExited(evt);
             }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btn_agregarMousePressed(evt);
+        });
+        btn_agregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_agregarActionPerformed(evt);
             }
         });
 
@@ -484,9 +488,6 @@ public class Empleados extends javax.swing.JFrame {
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btn_actualizarMouseExited(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btn_actualizarMousePressed(evt);
             }
         });
         btn_actualizar.addActionListener(new java.awt.event.ActionListener() {
@@ -507,8 +508,10 @@ public class Empleados extends javax.swing.JFrame {
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btn_buscarMouseExited(evt);
             }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btn_buscarMousePressed(evt);
+        });
+        btn_buscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_buscarActionPerformed(evt);
             }
         });
 
@@ -524,9 +527,6 @@ public class Empleados extends javax.swing.JFrame {
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btn_eliminarMouseExited(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btn_eliminarMousePressed(evt);
             }
         });
         btn_eliminar.addActionListener(new java.awt.event.ActionListener() {
@@ -863,66 +863,6 @@ public class Empleados extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_agregarMouseExited
 
-    private void btn_agregarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_agregarMousePressed
-        btn_agregar.setBackground(new Color(40,74,172));
-        
-        try{
-            if(estaVacio()){
-                return;
-            }
-
-            if(existeEmpleado()){
-                return;
-            }
-
-            if(existeUsuario()){
-                return;
-            }
-
-            if(!validarLongitudTelefono(txt_telefonoEmpleado,8)){
-                return;
-            }
-
-             if(!validarDni(txt_dniEmpleado.getText())){
-                return;
-
-            }
-             
-            char[] c = txt_contraseñaEmpleado.getPassword();
-            String contraseñaFinal ="";
-            for (int i = 0; i < c.length; i++) {
-                contraseñaFinal  += String.valueOf(c[i]);
-            }
-
-            String contraseñaEncriptada=DigestUtils.md5Hex(contraseñaFinal);
-            PreparedStatement ps;
-            ResultSet rs;
-        
-          ps=con.prepareStatement("INSERT INTO empleado (primer_nombre_empleado, segundo_nombre_empleado, primer_apellido_empleado, segundo_apellido_empleado,"
-                  + "telefono_empleado, email_empleado,dniempleado,usuario_empleado,contraseña_empleado)"
-                  + "VALUES(?,?,?,?,?,?,?,?,?)");
-                  ps.setString(1, txt_primerNombreEmpleado.getText());
-                  ps.setString(2, txt_segundoNombreEmpleado.getText());
-                  ps.setString(3, txt_primerApellidoEmpleado.getText());
-                  ps.setString(4, txt_segundoApellidoEmpleado.getText());
-                  ps.setString(5, txt_telefonoEmpleado.getText());
-                  ps.setString(6, txt_emailEmpleado.getText());
-                  ps.setString(7, txt_dniEmpleado.getText());
-                  ps.setString(8, txt_usuarioEmpleado.getText());
-                  ps.setString(9, contraseñaEncriptada);
-                  int res= ps.executeUpdate();
-                  if(res >0){
-                      JOptionPane.showMessageDialog(this, "Empleado agregado");
-                      restablecer();
-                  }
-                  
-        }catch(Exception e){
-            
-        }
-        
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_agregarMousePressed
-
     private void btn_actualizarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_actualizarMouseEntered
         btn_actualizar.setBackground(new Color(156,2,91));
     // TODO add your handling code here:
@@ -932,11 +872,6 @@ public class Empleados extends javax.swing.JFrame {
         btn_actualizar.setBackground(new Color(205,63,145));
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_actualizarMouseExited
-
-    private void btn_actualizarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_actualizarMousePressed
-       
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_actualizarMousePressed
 
     private void btn_buscarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_buscarMouseEntered
         btn_buscar.setBackground(new Color(156,2,91));
@@ -948,12 +883,6 @@ public class Empleados extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_buscarMouseExited
 
-    private void btn_buscarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_buscarMousePressed
-        btn_buscar.setBackground(new Color(40,74,172));
-        rellenar();
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_buscarMousePressed
-
     private void btn_eliminarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_eliminarMouseEntered
         btn_eliminar.setBackground(new Color(156,2,91));
         // TODO add your handling code here:
@@ -963,11 +892,6 @@ public class Empleados extends javax.swing.JFrame {
         btn_eliminar.setBackground(new Color(205,63,145));
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_eliminarMouseExited
-
-    private void btn_eliminarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_eliminarMousePressed
-      
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_eliminarMousePressed
 
     private void lbl_vercontraseñaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_vercontraseñaMouseClicked
         click++;
@@ -1136,7 +1060,7 @@ public class Empleados extends javax.swing.JFrame {
     private void btn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarActionPerformed
         btn_buscar.setBackground(new Color(40,74,172));
         String nombreEmpleado = txt_primerNombreEmpleado.getText() + " " + txt_primerApellidoEmpleado.getText();
-         if(JOptionPane.showConfirmDialog(null,"¿Está seguro que desea actualizar el registro del empleado "+nombreEmpleado+"?","Confirmación de actualización",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE
+         if(JOptionPane.showConfirmDialog(null,"¿Está seguro que desea actualizar el registro del empleado "+nombreEmpleado+"?","Confirmación de eliminación",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE
         )==JOptionPane.YES_OPTION){
              
             try{
@@ -1343,7 +1267,7 @@ public class Empleados extends javax.swing.JFrame {
                  || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
         return;
         }
-        if(txt_dniEmpleado.getText().length() >=50){
+        if(txt_emailEmpleado.getText().length() >=50){
             evt.consume();
             Toolkit.getDefaultToolkit().beep();
             JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
@@ -1386,6 +1310,71 @@ public class Empleados extends javax.swing.JFrame {
         }
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_contraseñaEmpleadoKeyTyped
+
+    private void btn_agregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_agregarActionPerformed
+         btn_agregar.setBackground(new Color(40,74,172));
+        
+        try{
+            if(estaVacio()){
+                return;
+            }
+
+            if(existeEmpleado()){
+                return;
+            }
+
+            if(existeUsuario()){
+                return;
+            }
+
+            if(!validarLongitudTelefono(txt_telefonoEmpleado,8)){
+                return;
+            }
+
+             if(!validarDni(txt_dniEmpleado.getText())){
+                return;
+
+            }
+             
+            char[] c = txt_contraseñaEmpleado.getPassword();
+            String contraseñaFinal ="";
+            for (int i = 0; i < c.length; i++) {
+                contraseñaFinal  += String.valueOf(c[i]);
+            }
+
+            String contraseñaEncriptada=DigestUtils.md5Hex(contraseñaFinal);
+            PreparedStatement ps;
+            ResultSet rs;
+        
+          ps=con.prepareStatement("INSERT INTO empleado (primer_nombre_empleado, segundo_nombre_empleado, primer_apellido_empleado, segundo_apellido_empleado,"
+                  + "telefono_empleado, email_empleado,dniempleado,usuario_empleado,contraseña_empleado)"
+                  + "VALUES(?,?,?,?,?,?,?,?,?)");
+                  ps.setString(1, txt_primerNombreEmpleado.getText());
+                  ps.setString(2, txt_segundoNombreEmpleado.getText());
+                  ps.setString(3, txt_primerApellidoEmpleado.getText());
+                  ps.setString(4, txt_segundoApellidoEmpleado.getText());
+                  ps.setString(5, txt_telefonoEmpleado.getText());
+                  ps.setString(6, txt_emailEmpleado.getText());
+                  ps.setString(7, txt_dniEmpleado.getText());
+                  ps.setString(8, txt_usuarioEmpleado.getText());
+                  ps.setString(9, contraseñaEncriptada);
+                  int res= ps.executeUpdate();
+                  if(res >0){
+                      JOptionPane.showMessageDialog(this, "Empleado agregado");
+                      restablecer();
+                  }
+                  
+        }catch(Exception e){
+            
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_agregarActionPerformed
+
+    private void btn_buscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_buscarActionPerformed
+        btn_buscar.setBackground(new Color(40,74,172));
+        rellenar();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_buscarActionPerformed
 
     /**
      * @param args the command line arguments
