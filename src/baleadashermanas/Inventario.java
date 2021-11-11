@@ -226,11 +226,21 @@ public class Inventario extends javax.swing.JFrame {
                 txt_nombreProductoActionPerformed(evt);
             }
         });
+        txt_nombreProducto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_nombreProductoKeyTyped(evt);
+            }
+        });
 
         txt_precioProducto.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
         txt_precioProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_precioProductoActionPerformed(evt);
+            }
+        });
+        txt_precioProducto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_precioProductoKeyTyped(evt);
             }
         });
 
@@ -693,6 +703,61 @@ public class Inventario extends javax.swing.JFrame {
         }
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_eliminarActionPerformed
+
+    private void txt_nombreProductoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_nombreProductoKeyTyped
+        char a=evt.getKeyChar();
+   
+            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
+                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
+                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+        return;
+        }
+         if(evt.getKeyChar() == 32){
+             if(txt_nombreProducto.getText().length() == 0){
+                 evt.consume();
+                 Toolkit.getDefaultToolkit().beep();
+                 return;
+             }
+             if(txt_nombreProducto.getText().substring(txt_nombreProducto.getText().length() - 1).equals(" ")){
+                 evt.consume();
+                 Toolkit.getDefaultToolkit().beep();
+             }
+             return; 
+         }
+        if(txt_nombreProducto.getText().length() >=100){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
+        }
+        
+        if(!Character.isLetterOrDigit(a) ){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo letras y números");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_nombreProductoKeyTyped
+
+    private void txt_precioProductoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_precioProductoKeyTyped
+        char a=evt.getKeyChar();
+        if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 ||
+            evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22
+            || evt.getKeyChar() == 26 || evt.getKeyChar() == 24 || evt.getKeyChar() == 46 || evt.getKeyChar() == 44) {
+            return;
+        }
+
+        if(txt_precioProducto.getText().length() >=10){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de dígitos admitidos");
+        }
+        if(Character.isLetter(a) || !Character.isLetterOrDigit(a)){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo numeros");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_precioProductoKeyTyped
 
     /**
      * @param args the command line arguments

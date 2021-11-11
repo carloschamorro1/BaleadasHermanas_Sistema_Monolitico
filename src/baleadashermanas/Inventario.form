@@ -207,6 +207,7 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_nombreProductoActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_nombreProductoKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txt_precioProducto">
@@ -217,6 +218,7 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_precioProductoActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_precioProductoKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_nombreUsuario">
