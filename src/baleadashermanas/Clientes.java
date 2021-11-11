@@ -74,7 +74,7 @@ public class Clientes extends javax.swing.JFrame {
     
     public void rellenar(){
         String input = "";
-        input = JOptionPane.showInputDialog(this, "¿A quien desea buscar?","Consulta de empleado",JOptionPane.QUESTION_MESSAGE);
+        input = JOptionPane.showInputDialog(this, "¿A quien desea buscar?","Consulta de cliente",JOptionPane.QUESTION_MESSAGE);
         if(input == null){
                 JOptionPane.showMessageDialog(this,"La acción fue cancelada","¡AVISO!",JOptionPane.INFORMATION_MESSAGE);
         }

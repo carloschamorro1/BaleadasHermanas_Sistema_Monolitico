@@ -5,9 +5,21 @@
  */
 package baleadashermanas;
 
+import baleadashermanas.BD.ConexionBD;
 import com.placeholder.PlaceHolder;
 import java.awt.Color;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.NumberFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -17,30 +29,156 @@ import javax.swing.JOptionPane;
  */
 public class Inventario extends javax.swing.JFrame {
 
+    Statement stmt = null;
+    Connection con = null;
+
     /**
      * Creates new form Inventario
      */
-    public Inventario(String nombreUsuario) {
+    public Inventario(String nombreUsuario) throws SQLException {
         initComponents();
         informacionGeneral();
         holders();
         lbl_nombreUsuario.setText(nombreUsuario);
+        this.con = ConexionBD.obtenerConexion();
+        lbl_idProducto.setVisible(false);
     }
-    
-    public Inventario(){
-        
+
+    public Inventario() {
+
     }
-    
-    public void informacionGeneral(){
+
+    public void informacionGeneral() {
         this.setTitle("Inventario");
         this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon(getClass().getResource("../Img/Titulo.png")).getImage());
     }
-    
-    public void holders(){
+
+    public void holders() {
         PlaceHolder holder;
-        holder = new PlaceHolder(txt_nombreProducto,Color.gray,Color.black,"Ingrese el nombre del producto",false,"Roboto",25);
-        holder = new PlaceHolder(txt_precioProducto,Color.gray,Color.black,"Ingrese el precio del producto",false,"Roboto",25);    
+        holder = new PlaceHolder(txt_nombreProducto, Color.gray, Color.black, "Ingrese el nombre del producto", false, "Roboto", 25);
+        holder = new PlaceHolder(txt_precioProducto, Color.gray, Color.black, "Ingrese el precio del producto", false, "Roboto", 25);
+    }
+
+    public void rellenar() {
+        String input = "";
+        input = JOptionPane.showInputDialog(this, "¿Qué producto desea buscar?", "Consulta de producto", JOptionPane.QUESTION_MESSAGE);
+        if (input == null) {
+            JOptionPane.showMessageDialog(this, "La acción fue cancelada", "¡AVISO!", JOptionPane.INFORMATION_MESSAGE);
+        } else if (input.equals("")) {
+            JOptionPane.showMessageDialog(this, "Favor de ingresar los datos del producto\n que desea buscar", "¡AVISO!", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            String sql = "select * from inventario\n"
+                    + "where nombreproducto ='" + input + "'";
+            try {
+                stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(sql);
+                if (rs.next()) {
+                    txt_nombreProducto.setText(rs.getString("nombreproducto"));
+                    int cantidad = Integer.parseInt(rs.getString("cantidadstock"));
+                    spi_cantidadProducto.setValue(cantidad);
+                    String tipoMovimiento = rs.getString("tipomovimiento");
+                    if (tipoMovimiento.equals("i")) {
+                        cmb_tipoMovimiento.setSelectedItem("Ingreso");
+                    }
+                    if (tipoMovimiento.equals("r")) {
+                        cmb_tipoMovimiento.setSelectedItem("Retiro");
+                    }
+                    txt_precioProducto.setText(rs.getString("precio"));
+                    lbl_idProducto.setText(rs.getString("idproducto"));
+                    colorear();
+                    habilitarAccionesBuscar();
+                } else {
+                    JOptionPane.showMessageDialog(null, "¡No se encuentra el producto! Por favor verifique sí, lo escribio correctamente");
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+                Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }
+
+    public void colorear() {
+        txt_nombreProducto.setForeground(Color.black);
+        spi_cantidadProducto.setForeground(Color.black);
+        cmb_tipoMovimiento.setForeground(Color.black);
+        txt_precioProducto.setForeground(Color.black);
+    }
+
+    public void habilitarAccionesBuscar() {
+        btn_agregar.setEnabled(false);
+        btn_actualizar.setEnabled(true);
+        btn_eliminar.setEnabled(true);
+    }
+
+    public boolean estaVacio() {
+        if (txt_nombreProducto.getText().equals("Ingrese el nombre del producto")) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el nombre del producto", "Ingrese el nombre", JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if (spi_cantidadProducto.getValue().equals("0")) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese la cantidad del producto", "Ingrese la cantidad", JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if (cmb_tipoMovimiento.getSelectedItem().equals("Seleccione el movimiento")) {
+            JOptionPane.showMessageDialog(this, "Por favor seleccione el tipo de movimiento", "Seleccione el tipo de movimiento", JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        if (txt_precioProducto.getText().equals("Ingrese el precio del producto")) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el precio del producto", "Ingrese el precio", JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        return false;
+    }
+
+    public void limpiar() {
+        txt_nombreProducto.setText("");
+        spi_cantidadProducto.setValue(0);
+        cmb_tipoMovimiento.setSelectedItem("Seleccione el movimiento");
+        txt_precioProducto.setText("");
+    }
+
+    public boolean existeProducto() {
+        try {
+            Statement st = con.createStatement();
+            String sql = "Select nombreproducto from inventario where nombreproducto = '" + txt_nombreProducto.getText() + "'";
+            ResultSet rs = st.executeQuery(sql);
+            if (rs.next()) {
+                JOptionPane.showMessageDialog(null, "El Producto: " + txt_nombreProducto.getText() + " ya existe", "Este producto ¡Ya existe!", JOptionPane.INFORMATION_MESSAGE);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public void restablecer() {
+        limpiar();
+        btn_agregar.setEnabled(true);
+        btn_buscar.setEnabled(true);
+        btn_actualizar.setEnabled(false);
+        btn_eliminar.setEnabled(false);
+        txt_nombreProducto.requestFocus();
+    }
+
+    public String capturarIdEmpleado() {
+        String idEmpleado = "";
+        try {
+            Statement st = con.createStatement();
+            String sql = "Select idempleado from empleado where usuario_empleado = '" + lbl_nombreUsuario.getText() + "'";
+            ResultSet rs = st.executeQuery(sql);
+            if (rs.next()) {
+                idEmpleado = rs.getString("idempleado");
+                return idEmpleado;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return idEmpleado;
     }
 
     /**
@@ -64,16 +202,16 @@ public class Inventario extends javax.swing.JFrame {
         lbl_home = new javax.swing.JLabel();
         lbl_usuario = new javax.swing.JLabel();
         lbl_tituloInventario = new javax.swing.JLabel();
-        lbl_fechaProducto = new javax.swing.JLabel();
         lbl_precioProducto = new javax.swing.JLabel();
         lbl_cantidadProducto = new javax.swing.JLabel();
         lbl_segundoApellidoEmpleado = new javax.swing.JLabel();
         lbl_nombreProducto = new javax.swing.JLabel();
-        dch_fechaIntroduccion = new com.toedter.calendar.JDateChooser();
         spi_cantidadProducto = new javax.swing.JSpinner();
         cmb_tipoMovimiento = new javax.swing.JComboBox<>();
+        lbl_idProducto = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         kGradientPanel1.setkEndColor(new java.awt.Color(40, 74, 172));
         kGradientPanel1.setkStartColor(new java.awt.Color(205, 63, 145));
@@ -111,8 +249,10 @@ public class Inventario extends javax.swing.JFrame {
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btn_agregarMouseExited(evt);
             }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btn_agregarMousePressed(evt);
+        });
+        btn_agregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_agregarActionPerformed(evt);
             }
         });
 
@@ -121,6 +261,7 @@ public class Inventario extends javax.swing.JFrame {
         btn_actualizar.setForeground(new java.awt.Color(255, 255, 255));
         btn_actualizar.setText("Actualizar");
         btn_actualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_actualizar.setEnabled(false);
         btn_actualizar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btn_actualizarMouseEntered(evt);
@@ -128,8 +269,10 @@ public class Inventario extends javax.swing.JFrame {
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btn_actualizarMouseExited(evt);
             }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btn_actualizarMousePressed(evt);
+        });
+        btn_actualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_actualizarActionPerformed(evt);
             }
         });
 
@@ -145,8 +288,10 @@ public class Inventario extends javax.swing.JFrame {
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btn_buscarMouseExited(evt);
             }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btn_buscarMousePressed(evt);
+        });
+        btn_buscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_buscarActionPerformed(evt);
             }
         });
 
@@ -155,6 +300,7 @@ public class Inventario extends javax.swing.JFrame {
         btn_eliminar.setForeground(new java.awt.Color(255, 255, 255));
         btn_eliminar.setText("Eliminar");
         btn_eliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_eliminar.setEnabled(false);
         btn_eliminar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btn_eliminarMouseEntered(evt);
@@ -164,6 +310,11 @@ public class Inventario extends javax.swing.JFrame {
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btn_eliminarMousePressed(evt);
+            }
+        });
+        btn_eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_eliminarActionPerformed(evt);
             }
         });
 
@@ -180,13 +331,6 @@ public class Inventario extends javax.swing.JFrame {
 
         lbl_tituloInventario.setFont(new java.awt.Font("Roboto Black", 0, 48)); // NOI18N
         lbl_tituloInventario.setText("Inventario");
-
-        lbl_fechaProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/fecha.png"))); // NOI18N
-        lbl_fechaProducto.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                lbl_fechaProductoMousePressed(evt);
-            }
-        });
 
         lbl_precioProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/pagar.png"))); // NOI18N
         lbl_precioProducto.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -216,25 +360,15 @@ public class Inventario extends javax.swing.JFrame {
             }
         });
 
-        dch_fechaIntroduccion.setBackground(new java.awt.Color(255, 255, 255));
-        dch_fechaIntroduccion.setDateFormatString("dd/MM/yyyy");
-        dch_fechaIntroduccion.setFocusCycleRoot(true);
-        dch_fechaIntroduccion.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
-        dch_fechaIntroduccion.setMaxSelectableDate(new java.util.Date(253370790065000L));
-        dch_fechaIntroduccion.setMinSelectableDate(new java.util.Date(1420095665000L));
-        dch_fechaIntroduccion.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                dch_fechaIntroduccionKeyTyped(evt);
-            }
-        });
-
-        spi_cantidadProducto.setFont(new java.awt.Font("Roboto", 0, 11)); // NOI18N
+        spi_cantidadProducto.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
         spi_cantidadProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         cmb_tipoMovimiento.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
         cmb_tipoMovimiento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione el movimiento", "Ingreso", "Retiro" }));
         cmb_tipoMovimiento.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         cmb_tipoMovimiento.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+        lbl_idProducto.setText("prueba");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -250,36 +384,35 @@ public class Inventario extends javax.swing.JFrame {
                 .addGap(0, 501, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(143, 143, 143)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lbl_nombreProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(lbl_precioProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txt_precioProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lbl_fechaProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbl_cantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbl_segundoApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbl_nombreProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txt_nombreProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
-                                .addComponent(dch_fechaIntroduccion, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
-                                .addComponent(spi_cantidadProducto))
-                            .addComponent(cmb_tipoMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btn_agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btn_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btn_actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btn_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(176, 176, 176))))
+                            .addComponent(lbl_segundoApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txt_nombreProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
+                    .addComponent(txt_precioProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
+                    .addComponent(cmb_tipoMovimiento, 0, 434, Short.MAX_VALUE)
+                    .addComponent(spi_cantidadProducto))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 179, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(176, 176, 176))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lbl_home)
-                .addGap(21, 21, 21))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(lbl_home)
+                        .addGap(21, 21, 21))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(lbl_idProducto)
+                        .addGap(37, 37, 37))))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_actualizar, btn_agregar, btn_buscar, btn_eliminar});
@@ -306,34 +439,34 @@ public class Inventario extends javax.swing.JFrame {
                             .addComponent(lbl_tituloInventario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(114, 114, 114)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbl_fechaProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(dch_fechaIntroduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(50, 50, 50)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbl_cantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(spi_cantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(63, 63, 63)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lbl_segundoApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmb_tipoMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(36, 36, 36))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                         .addComponent(btn_agregar)
-                        .addGap(25, 25, 25)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btn_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btn_actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btn_eliminar)
-                        .addGap(60, 60, 60)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbl_precioProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_precioProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(104, 104, 104))
+                        .addGap(227, 227, 227)
+                        .addComponent(lbl_idProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(spi_cantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(64, 64, 64)
+                                .addComponent(cmb_tipoMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(36, 36, 36)
+                                .addComponent(txt_precioProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(lbl_cantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(63, 63, 63)
+                                .addComponent(lbl_segundoApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(36, 36, 36)
+                                .addComponent(lbl_precioProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_actualizar, btn_agregar, btn_buscar, btn_eliminar});
@@ -352,7 +485,7 @@ public class Inventario extends javax.swing.JFrame {
             .addGroup(kGradientPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -379,66 +512,47 @@ public class Inventario extends javax.swing.JFrame {
     }//GEN-LAST:event_txt_precioProductoActionPerformed
 
     private void btn_agregarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_agregarMouseEntered
-        btn_agregar.setBackground(new Color(156,2,91));
+        btn_agregar.setBackground(new Color(156, 2, 91));
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_agregarMouseEntered
 
     private void btn_agregarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_agregarMouseExited
-        btn_agregar.setBackground(new Color(205,63,145));
+        btn_agregar.setBackground(new Color(205, 63, 145));
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_agregarMouseExited
 
-    private void btn_agregarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_agregarMousePressed
-        btn_agregar.setBackground(new Color(40,74,172));
-        JOptionPane.showMessageDialog(this, "Cliente agregado");
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_agregarMousePressed
-
     private void btn_actualizarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_actualizarMouseEntered
-        btn_actualizar.setBackground(new Color(156,2,91));
+        btn_actualizar.setBackground(new Color(156, 2, 91));
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_actualizarMouseEntered
 
     private void btn_actualizarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_actualizarMouseExited
-        btn_actualizar.setBackground(new Color(205,63,145));
+        btn_actualizar.setBackground(new Color(205, 63, 145));
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_actualizarMouseExited
 
-    private void btn_actualizarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_actualizarMousePressed
-        btn_actualizar.setBackground(new Color(40,74,172));
-        JOptionPane.showMessageDialog(this, "Cliente actualizado");
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_actualizarMousePressed
-
     private void btn_buscarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_buscarMouseEntered
-        btn_buscar.setBackground(new Color(156,2,91));
+        btn_buscar.setBackground(new Color(156, 2, 91));
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_buscarMouseEntered
 
     private void btn_buscarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_buscarMouseExited
-        btn_buscar.setBackground(new Color(205,63,145));
+        btn_buscar.setBackground(new Color(205, 63, 145));
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_buscarMouseExited
 
-    private void btn_buscarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_buscarMousePressed
-        btn_buscar.setBackground(new Color(40,74,172));
-        JOptionPane.showInputDialog(this, "¿A quien desea buscar?");
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_buscarMousePressed
-
     private void btn_eliminarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_eliminarMouseEntered
-        btn_eliminar.setBackground(new Color(156,2,91));
+        btn_eliminar.setBackground(new Color(156, 2, 91));
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_eliminarMouseEntered
 
     private void btn_eliminarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_eliminarMouseExited
-        btn_eliminar.setBackground(new Color(205,63,145));
+        btn_eliminar.setBackground(new Color(205, 63, 145));
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_eliminarMouseExited
 
     private void btn_eliminarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_eliminarMousePressed
-        btn_buscar.setBackground(new Color(40,74,172));
-        JOptionPane.showInputDialog(this, "¿A quien desea eliminar?");
+
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_eliminarMousePressed
 
@@ -449,18 +563,13 @@ public class Inventario extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_homeMousePressed
 
-    private void lbl_fechaProductoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_fechaProductoMousePressed
-
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lbl_fechaProductoMousePressed
-
     private void lbl_precioProductoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_precioProductoMousePressed
         txt_precioProducto.requestFocus();
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_precioProductoMousePressed
 
     private void lbl_cantidadProductoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_cantidadProductoMousePressed
-      
+
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_cantidadProductoMousePressed
 
@@ -474,12 +583,116 @@ public class Inventario extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_nombreProductoMousePressed
 
-    private void dch_fechaIntroduccionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_dch_fechaIntroduccionKeyTyped
-        char a=evt.getKeyChar();
-        evt.consume();
-        Toolkit.getDefaultToolkit().beep();
+    private void btn_agregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_agregarActionPerformed
+        btn_agregar.setBackground(new Color(40, 74, 172));
+        try {
+            if (estaVacio()) {
+                return;
+            }
+
+            if (existeProducto()) {
+                return;
+            }
+
+            Calendar f;
+            f = Calendar.getInstance();
+            int d = f.get(Calendar.DATE), mes = 1 + (f.get(Calendar.MONTH)), año = f.get(Calendar.YEAR);
+            String fecha = (año + "-" + mes + "-" + d);
+
+            PreparedStatement ps;
+            ResultSet rs;
+
+            ps = con.prepareStatement("INSERT INTO inventario (nombreproducto, idempleado, cantidadstock, fechaintroduccion,"
+                    + "tipomovimiento, precio)"
+                    + "VALUES(?,?,?,?,?,?)");
+            ps.setString(1, txt_nombreProducto.getText());
+            String idEmpleado = capturarIdEmpleado();
+            ps.setString(2, idEmpleado);
+            ps.setString(3, spi_cantidadProducto.getValue().toString());
+            ps.setString(4, fecha);
+            ps.setString(5, cmb_tipoMovimiento.getSelectedItem().toString().substring(0, 1).toLowerCase());
+            ps.setString(6, txt_precioProducto.getText());
+            int res = ps.executeUpdate();
+            if (res > 0) {
+                JOptionPane.showMessageDialog(this, "Producto agregado");
+                restablecer();
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+
         // TODO add your handling code here:
-    }//GEN-LAST:event_dch_fechaIntroduccionKeyTyped
+    }//GEN-LAST:event_btn_agregarActionPerformed
+
+    private void btn_buscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_buscarActionPerformed
+        btn_buscar.setBackground(new Color(40, 74, 172));
+        rellenar();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_buscarActionPerformed
+
+    private void btn_actualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_actualizarActionPerformed
+        btn_actualizar.setBackground(new Color(40, 74, 172));
+
+        String nombreProducto = txt_nombreProducto.getText();
+        if (JOptionPane.showConfirmDialog(null, "¿Está seguro que desea actualizar el registro del producto " + nombreProducto + "?", "Confirmación de actualización", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE
+        ) == JOptionPane.YES_OPTION) {
+            try {
+                if (estaVacio()) {
+                    return;
+                }
+
+                Calendar f;
+                f = Calendar.getInstance();
+                int d = f.get(Calendar.DATE), mes = 1 + (f.get(Calendar.MONTH)), año = f.get(Calendar.YEAR);
+                String fecha = (año + "-" + mes + "-" + d);
+
+                String tipoMovimiento = cmb_tipoMovimiento.getSelectedItem().toString().substring(0, 1).toLowerCase();
+
+                Statement st = con.createStatement();
+                String sql = "Update inventario \n"
+                        + "Set nombreproducto = '" + txt_nombreProducto.getText() + "',\n"
+                        + "cantidadstock = '" + spi_cantidadProducto.getValue().toString() + "',\n"
+                        + "fechaintroduccion = '" + fecha + "',\n"
+                        + "tipomovimiento = '" + tipoMovimiento + "',"
+                        + "precio = '" + txt_precioProducto.getText() + "'"
+                        + "where idproducto = '" + lbl_idProducto.getText() + "'";
+                int res = st.executeUpdate(sql);
+                if (res > 0) {
+                    JOptionPane.showMessageDialog(this, "Producto actualizado");
+                    restablecer();
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage());
+            }
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_actualizarActionPerformed
+
+    private void btn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarActionPerformed
+        btn_buscar.setBackground(new Color(40, 74, 172));
+        String nombreProducto = txt_nombreProducto.getText();
+        if (JOptionPane.showConfirmDialog(null, "¿Está seguro que desea actualizar el registro del producto " + nombreProducto + "?", "Confirmación de eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE
+        ) == JOptionPane.YES_OPTION) {
+
+            try {
+                PreparedStatement ps;
+                ResultSet rs;
+                ps = con.prepareStatement("Delete inventario\n"
+                        + "where idproducto =?");
+                ps.setString(1, lbl_idProducto.getText());
+                int res = ps.executeUpdate();
+                if (res > 0) {
+                    JOptionPane.showMessageDialog(this, "Producto eliminado");
+                    restablecer();
+                }
+
+            } catch (Exception e) {
+
+            }
+
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_eliminarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -522,12 +735,11 @@ public class Inventario extends javax.swing.JFrame {
     private javax.swing.JButton btn_buscar;
     private javax.swing.JButton btn_eliminar;
     private javax.swing.JComboBox<String> cmb_tipoMovimiento;
-    private com.toedter.calendar.JDateChooser dch_fechaIntroduccion;
     private javax.swing.JPanel jPanel1;
     private keeptoo.KGradientPanel kGradientPanel1;
     private javax.swing.JLabel lbl_cantidadProducto;
-    private javax.swing.JLabel lbl_fechaProducto;
     private javax.swing.JLabel lbl_home;
+    private javax.swing.JLabel lbl_idProducto;
     private javax.swing.JLabel lbl_nombreProducto;
     private javax.swing.JLabel lbl_nombreUsuario;
     private javax.swing.JLabel lbl_precioProducto;

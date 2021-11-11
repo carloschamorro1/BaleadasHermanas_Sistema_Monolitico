@@ -3,6 +3,7 @@
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -62,7 +63,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="26" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -89,44 +90,44 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="143" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="lbl_precioProducto" min="-2" pref="32" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="txt_precioProducto" min="-2" pref="434" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="lbl_fechaProducto" alignment="1" min="-2" pref="32" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="lbl_nombreProducto" min="-2" pref="32" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="lbl_precioProducto" alignment="0" min="-2" pref="32" max="-2" attributes="0"/>
+                              <Group type="103" alignment="0" groupAlignment="1" attributes="0">
                                   <Component id="lbl_cantidadProducto" alignment="1" min="-2" pref="32" max="-2" attributes="0"/>
                                   <Component id="lbl_segundoApellidoEmpleado" alignment="1" min="-2" pref="32" max="-2" attributes="0"/>
-                                  <Component id="lbl_nombreProducto" alignment="1" min="-2" pref="32" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="txt_nombreProducto" alignment="0" pref="434" max="32767" attributes="0"/>
-                                      <Component id="dch_fechaIntroduccion" pref="434" max="32767" attributes="0"/>
-                                      <Component id="spi_cantidadProducto" max="32767" attributes="0"/>
-                                  </Group>
-                                  <Component id="cmb_tipoMovimiento" alignment="0" min="-2" pref="434" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="btn_agregar" linkSize="1" min="-2" pref="250" max="-2" attributes="0"/>
-                                  <Component id="btn_buscar" linkSize="1" min="-2" pref="255" max="-2" attributes="0"/>
-                                  <Component id="btn_actualizar" linkSize="1" alignment="0" min="-2" pref="215" max="-2" attributes="0"/>
-                                  <Component id="btn_eliminar" linkSize="1" alignment="0" min="-2" pref="119" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="176" max="-2" attributes="0"/>
                           </Group>
                       </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="txt_nombreProducto" pref="434" max="32767" attributes="0"/>
+                          <Component id="txt_precioProducto" alignment="0" pref="434" max="32767" attributes="0"/>
+                          <Component id="cmb_tipoMovimiento" alignment="0" pref="434" max="32767" attributes="0"/>
+                          <Component id="spi_cantidadProducto" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="179" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="btn_agregar" linkSize="1" min="-2" pref="250" max="-2" attributes="0"/>
+                          <Component id="btn_buscar" linkSize="1" min="-2" pref="255" max="-2" attributes="0"/>
+                          <Component id="btn_actualizar" linkSize="1" alignment="0" min="-2" pref="215" max="-2" attributes="0"/>
+                          <Component id="btn_eliminar" linkSize="1" alignment="0" min="-2" pref="119" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="176" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="lbl_home" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="lbl_home" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="lbl_idProducto" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -159,41 +160,40 @@
                           </Group>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lbl_fechaProducto" min="-2" pref="68" max="-2" attributes="0"/>
-                                  <Component id="dch_fechaIntroduccion" min="-2" pref="67" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lbl_cantidadProducto" min="-2" pref="68" max="-2" attributes="0"/>
-                                  <Component id="spi_cantidadProducto" min="-2" pref="67" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="lbl_segundoApellidoEmpleado" min="-2" pref="68" max="-2" attributes="0"/>
-                                  <Component id="cmb_tipoMovimiento" min="-2" pref="68" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
-                          </Group>
                           <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace pref="28" max="32767" attributes="0"/>
                               <Component id="btn_agregar" linkSize="2" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="btn_buscar" linkSize="2" min="-2" pref="61" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="btn_actualizar" linkSize="2" min="-2" pref="62" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="btn_eliminar" linkSize="2" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="227" max="-2" attributes="0"/>
+                              <Component id="lbl_idProducto" min="-2" pref="15" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="spi_cantidadProducto" min="-2" pref="67" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
+                                      <Component id="cmb_tipoMovimiento" min="-2" pref="68" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                                      <Component id="txt_precioProducto" min="-2" pref="68" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Component id="lbl_cantidadProducto" min="-2" pref="68" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
+                                      <Component id="lbl_segundoApellidoEmpleado" min="-2" pref="68" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                                      <Component id="lbl_precioProducto" min="-2" pref="68" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lbl_precioProducto" alignment="0" min="-2" pref="68" max="-2" attributes="0"/>
-                          <Component id="txt_precioProducto" alignment="0" min="-2" pref="68" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="104" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -246,7 +246,7 @@
               <Events>
                 <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_agregarMouseEntered"/>
                 <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_agregarMouseExited"/>
-                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_agregarMousePressed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_agregarActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btn_actualizar">
@@ -264,11 +264,12 @@
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_actualizarMouseEntered"/>
                 <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_actualizarMouseExited"/>
-                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_actualizarMousePressed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_actualizarActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btn_buscar">
@@ -290,7 +291,7 @@
               <Events>
                 <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_buscarMouseEntered"/>
                 <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_buscarMouseExited"/>
-                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_buscarMousePressed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_buscarActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btn_eliminar">
@@ -308,11 +309,13 @@
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_eliminarMouseEntered"/>
                 <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_eliminarMouseExited"/>
                 <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_eliminarMousePressed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_eliminarActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_home">
@@ -345,16 +348,6 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Inventario"/>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="lbl_fechaProducto">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Img/fecha.png"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lbl_fechaProductoMousePressed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_precioProducto">
               <Properties>
@@ -396,31 +389,10 @@
                 <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lbl_nombreProductoMousePressed"/>
               </Events>
             </Component>
-            <Component class="com.toedter.calendar.JDateChooser" name="dch_fechaIntroduccion">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                </Property>
-                <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy"/>
-                <Property name="focusCycleRoot" type="boolean" value="true"/>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Roboto" size="20" style="0"/>
-                </Property>
-                <Property name="maxSelectableDate" type="java.util.Date" editor="org.netbeans.beaninfo.editors.DateEditor">
-                  <SerializedValue value="-84,-19,0,5,115,114,0,14,106,97,118,97,46,117,116,105,108,46,68,97,116,101,104,106,-127,1,75,89,116,25,3,0,0,120,112,119,8,0,0,-26,112,123,-16,51,104,120"/>
-                </Property>
-                <Property name="minSelectableDate" type="java.util.Date" editor="org.netbeans.beaninfo.editors.DateEditor">
-                  <SerializedValue value="-84,-19,0,5,115,114,0,14,106,97,118,97,46,117,116,105,108,46,68,97,116,101,104,106,-127,1,75,89,116,25,3,0,0,120,112,119,8,0,0,1,74,-92,76,51,104,120"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="dch_fechaIntroduccionKeyTyped"/>
-              </Events>
-            </Component>
             <Component class="javax.swing.JSpinner" name="spi_cantidadProducto">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Roboto" size="11" style="0"/>
+                  <Font name="Roboto" size="20" style="0"/>
                 </Property>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
@@ -453,6 +425,11 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lbl_idProducto">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="prueba"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>

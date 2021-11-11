@@ -20,6 +20,7 @@ public class Principal extends javax.swing.JFrame {
 
     /**
      * Creates new form Principal
+     * @param nombreUsuario
      */
  
     public Principal(String nombreUsuario){
@@ -32,7 +33,7 @@ public class Principal extends javax.swing.JFrame {
         
     }
     
-     public void informacionGeneral(){
+     public final void informacionGeneral(){
         this.setTitle("Menú Principal");
         this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon(getClass().getResource("../Img/Titulo.png")).getImage());
@@ -325,9 +326,15 @@ public class Principal extends javax.swing.JFrame {
 
     private void btn_inventarioMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_inventarioMousePressed
         btn_clientes.setBackground(new Color(40,74,172));
-        Inventario inventario = new Inventario(lbl_nombreUsuario.getText());
-        this.dispose();
-        inventario.setVisible(true);
+        Inventario inventario;
+        try {
+            inventario = new Inventario(lbl_nombreUsuario.getText());
+            this.dispose();
+            inventario.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_inventarioMousePressed
 
