@@ -5,12 +5,23 @@
  */
 package baleadashermanas;
 
+import baleadashermanas.BD.ConexionBD;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.placeholder.PlaceHolder;
 import java.awt.Color;
 import java.awt.Toolkit;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.NumberFormat;
+import java.util.Locale;
 import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -19,15 +30,19 @@ import javax.swing.UIManager;
 public class Orden extends javax.swing.JFrame {
     
     boolean hayDecimal= false;
+    Statement stmt = null;
+    Connection con = null;
 
     /**
      * Creates new form Orden
      */
-    public Orden(String nombreUsuario) {
+    public Orden(String nombreUsuario) throws SQLException {
         initComponents();
         informacionGeneral();
         txt_subtotal.requestFocus();
         lbl_nombreUsuario.setText(nombreUsuario);
+        this.con = ConexionBD.obtenerConexion();
+        lbl_nombreProducto.setVisible(false);
     }
     
     public Orden(){
@@ -41,6 +56,72 @@ public class Orden extends javax.swing.JFrame {
         
         PlaceHolder holder;
         holder = new PlaceHolder(txt_buscar,Color.gray,Color.black,"Ingrese el producto a buscar",false,"Roboto",25);
+    }
+    
+    private void actualizarDatos() {
+        try {
+                String nombreProducto = lbl_nombreProducto.getText();
+                String sql = "SELECT * FROM inventario where nombreproducto = '"+nombreProducto+"'";
+                stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(sql);
+                double subtotal = 0;
+                 while(rs.next()) {
+                    Locale locale = new Locale("es", "HN"); 
+                    NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+                    DefaultTableModel model = (DefaultTableModel) tbl_orden.getModel();
+                    String []datos= new String[3];
+                    datos[0] =rs.getString("nombreproducto");
+                    datos[1] = "1";
+                    String precio = currencyFormatter.format(rs.getDouble("precio")).substring(1);
+                    datos[2] =precio;   
+                    model.addRow(datos);
+                    subtotal = rs.getDouble("precio");
+                 }
+                double totalAnterior = Double.parseDouble(txt_total.getText());
+                double totalNuevo = totalAnterior + subtotal;
+                
+                double isv = totalNuevo * 0.15;
+                double subtotalConImpuesto = totalNuevo - isv;
+                
+                double total = subtotalConImpuesto + isv;
+                
+                String subtotalFinal = String.valueOf(subtotalConImpuesto);
+                String isvFinal = String.valueOf(isv);
+                String totalFinal = String.valueOf(total);
+                txt_subtotal.setText(subtotalFinal);
+                txt_isv.setText(isvFinal);
+                txt_total.setText(totalFinal);
+                habilitarNumeros();
+        }
+        catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+    
+    public void cambio(){
+            Locale locale = new Locale("es", "HN"); 
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+            String pagoCliente = txt_pago.getText();
+            double pago = Double.parseDouble(pagoCliente);
+            double total = Double.parseDouble(txt_total.getText());
+            double cambio = pago - total;
+            String cambioTotal = currencyFormatter.format(cambio);
+            txt_cambio.setText(cambioTotal);
+            }
+    
+    public void habilitarNumeros(){
+        btn_retroceso.setEnabled(true);
+        btn_punto.setEnabled(true);
+        btn_0.setEnabled(true);
+        btn_1.setEnabled(true);
+        btn_2.setEnabled(true);
+        btn_3.setEnabled(true);
+        btn_4.setEnabled(true);
+        btn_5.setEnabled(true);
+        btn_6.setEnabled(true);
+        btn_7.setEnabled(true);
+        btn_8.setEnabled(true);
+        btn_9.setEnabled(true);   
     }
 
     /**
@@ -72,22 +153,15 @@ public class Orden extends javax.swing.JFrame {
         btn_punto = new javax.swing.JButton();
         btn_retroceso = new javax.swing.JButton();
         jpn_productos = new javax.swing.JPanel();
-        jButton14 = new javax.swing.JButton();
-        jButton15 = new javax.swing.JButton();
-        jButton16 = new javax.swing.JButton();
-        jButton17 = new javax.swing.JButton();
-        jButton18 = new javax.swing.JButton();
-        jButton19 = new javax.swing.JButton();
-        jButton20 = new javax.swing.JButton();
-        jButton21 = new javax.swing.JButton();
-        jButton22 = new javax.swing.JButton();
-        jButton23 = new javax.swing.JButton();
-        jButton24 = new javax.swing.JButton();
-        jButton25 = new javax.swing.JButton();
-        jButton26 = new javax.swing.JButton();
-        jButton27 = new javax.swing.JButton();
-        jButton28 = new javax.swing.JButton();
-        jButton29 = new javax.swing.JButton();
+        btn_baleadaSencilla = new javax.swing.JButton();
+        btn_refrescoNatural = new javax.swing.JButton();
+        btn_carneAsada = new javax.swing.JButton();
+        btn_baleadaCarne = new javax.swing.JButton();
+        btn_polloChuco = new javax.swing.JButton();
+        btn_gaseosa = new javax.swing.JButton();
+        btn_cenaTipica = new javax.swing.JButton();
+        btn_desayunoTipico = new javax.swing.JButton();
+        btn_baleadaTodo = new javax.swing.JButton();
         jsp_tabla = new javax.swing.JScrollPane();
         tbl_orden = new javax.swing.JTable();
         jpn_pago = new javax.swing.JPanel();
@@ -112,8 +186,10 @@ public class Orden extends javax.swing.JFrame {
         btn_borrar = new javax.swing.JButton();
         lbl_buscar = new javax.swing.JLabel();
         txt_buscar = new javax.swing.JTextField();
+        lbl_nombreProducto = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         kGradientPanel1.setkEndColor(new java.awt.Color(40, 74, 172));
         kGradientPanel1.setkStartColor(new java.awt.Color(205, 63, 145));
@@ -144,6 +220,7 @@ public class Orden extends javax.swing.JFrame {
         btn_9.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
         btn_9.setText("9");
         btn_9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_9.setEnabled(false);
         btn_9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_9ActionPerformed(evt);
@@ -153,6 +230,7 @@ public class Orden extends javax.swing.JFrame {
         btn_7.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
         btn_7.setText("7");
         btn_7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_7.setEnabled(false);
         btn_7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_7ActionPerformed(evt);
@@ -162,6 +240,7 @@ public class Orden extends javax.swing.JFrame {
         btn_8.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
         btn_8.setText("8");
         btn_8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_8.setEnabled(false);
         btn_8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_8ActionPerformed(evt);
@@ -171,6 +250,7 @@ public class Orden extends javax.swing.JFrame {
         btn_4.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
         btn_4.setText("4");
         btn_4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_4.setEnabled(false);
         btn_4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_4ActionPerformed(evt);
@@ -180,6 +260,7 @@ public class Orden extends javax.swing.JFrame {
         btn_5.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
         btn_5.setText("5");
         btn_5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_5.setEnabled(false);
         btn_5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_5ActionPerformed(evt);
@@ -189,6 +270,7 @@ public class Orden extends javax.swing.JFrame {
         btn_6.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
         btn_6.setText("6");
         btn_6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_6.setEnabled(false);
         btn_6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_6ActionPerformed(evt);
@@ -198,6 +280,7 @@ public class Orden extends javax.swing.JFrame {
         btn_1.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
         btn_1.setText("1");
         btn_1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_1.setEnabled(false);
         btn_1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_1ActionPerformed(evt);
@@ -207,6 +290,7 @@ public class Orden extends javax.swing.JFrame {
         btn_2.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
         btn_2.setText("2");
         btn_2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_2.setEnabled(false);
         btn_2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_2ActionPerformed(evt);
@@ -216,6 +300,7 @@ public class Orden extends javax.swing.JFrame {
         btn_3.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
         btn_3.setText("3");
         btn_3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_3.setEnabled(false);
         btn_3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_3ActionPerformed(evt);
@@ -225,6 +310,7 @@ public class Orden extends javax.swing.JFrame {
         btn_0.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
         btn_0.setText("0");
         btn_0.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_0.setEnabled(false);
         btn_0.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_0ActionPerformed(evt);
@@ -234,6 +320,7 @@ public class Orden extends javax.swing.JFrame {
         btn_punto.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
         btn_punto.setText(".");
         btn_punto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_punto.setEnabled(false);
         btn_punto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_puntoActionPerformed(evt);
@@ -243,6 +330,7 @@ public class Orden extends javax.swing.JFrame {
         btn_retroceso.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
         btn_retroceso.setText("C");
         btn_retroceso.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_retroceso.setEnabled(false);
         btn_retroceso.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_retrocesoActionPerformed(evt);
@@ -310,70 +398,122 @@ public class Orden extends javax.swing.JFrame {
 
         jpn_productos.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
-        jButton14.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton14.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_baleadaSencilla.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_baleadaSencilla.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleadasencilla.jpg"))); // NOI18N
+        btn_baleadaSencilla.setText("Baleada Sencilla");
+        btn_baleadaSencilla.setToolTipText("");
+        btn_baleadaSencilla.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_baleadaSencilla.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_baleadaSencilla.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_baleadaSencilla.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_baleadaSencillaActionPerformed(evt);
+            }
+        });
 
-        jButton15.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton15.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_refrescoNatural.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_refrescoNatural.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/refresconatural.jpeg"))); // NOI18N
+        btn_refrescoNatural.setText("Refresco Natural");
+        btn_refrescoNatural.setToolTipText("");
+        btn_refrescoNatural.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_refrescoNatural.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_refrescoNatural.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_refrescoNatural.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_refrescoNaturalActionPerformed(evt);
+            }
+        });
 
-        jButton16.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton16.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_carneAsada.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_carneAsada.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/carneasada.jpg"))); // NOI18N
+        btn_carneAsada.setText("Carne Asada");
+        btn_carneAsada.setToolTipText("");
+        btn_carneAsada.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_carneAsada.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_carneAsada.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_carneAsada.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_carneAsadaActionPerformed(evt);
+            }
+        });
 
-        jButton17.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton17.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_baleadaCarne.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_baleadaCarne.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleadacarne.jpg"))); // NOI18N
+        btn_baleadaCarne.setText("Baleada Carne");
+        btn_baleadaCarne.setToolTipText("");
+        btn_baleadaCarne.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_baleadaCarne.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_baleadaCarne.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_baleadaCarne.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_baleadaCarneActionPerformed(evt);
+            }
+        });
 
-        jButton18.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton18.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_polloChuco.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_polloChuco.setIcon(new javax.swing.ImageIcon("C:\\Users\\cmcha\\Documents\\NetBeansProjects\\BaleadasHermanas\\BaleadasHermanas\\src\\Img\\pollo.png")); // NOI18N
+        btn_polloChuco.setText("Pollo Chuco");
+        btn_polloChuco.setToolTipText("");
+        btn_polloChuco.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_polloChuco.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_polloChuco.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_polloChuco.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_polloChucoActionPerformed(evt);
+            }
+        });
 
-        jButton19.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton19.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_gaseosa.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_gaseosa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/logococa.jpg"))); // NOI18N
+        btn_gaseosa.setText("Gaseosa");
+        btn_gaseosa.setToolTipText("");
+        btn_gaseosa.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_gaseosa.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_gaseosa.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_gaseosa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_gaseosaActionPerformed(evt);
+            }
+        });
 
-        jButton20.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton20.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_cenaTipica.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_cenaTipica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/cena.jpg"))); // NOI18N
+        btn_cenaTipica.setText("Cena Típica");
+        btn_cenaTipica.setToolTipText("");
+        btn_cenaTipica.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_cenaTipica.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_cenaTipica.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_cenaTipica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cenaTipicaActionPerformed(evt);
+            }
+        });
 
-        jButton21.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton21.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_desayunoTipico.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_desayunoTipico.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/desayunojpg.jpg"))); // NOI18N
+        btn_desayunoTipico.setText("Desayuno Típico");
+        btn_desayunoTipico.setToolTipText("");
+        btn_desayunoTipico.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_desayunoTipico.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_desayunoTipico.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_desayunoTipico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_desayunoTipicoActionPerformed(evt);
+            }
+        });
 
-        jButton22.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton22.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        jButton23.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton23.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        jButton24.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton24.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        jButton25.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton25.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        jButton26.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton26.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        jButton27.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton27.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton27.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        jButton28.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton28.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton28.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        jButton29.setFont(new java.awt.Font("Roboto", 1, 36)); // NOI18N
-        jButton29.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada generica.jpg"))); // NOI18N
-        jButton29.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_baleadaTodo.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_baleadaTodo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada-con-Todo.png"))); // NOI18N
+        btn_baleadaTodo.setText("Baleada con Todo");
+        btn_baleadaTodo.setToolTipText("");
+        btn_baleadaTodo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_baleadaTodo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_baleadaTodo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_baleadaTodo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_baleadaTodoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpn_productosLayout = new javax.swing.GroupLayout(jpn_productos);
         jpn_productos.setLayout(jpn_productosLayout);
@@ -382,75 +522,56 @@ public class Orden extends javax.swing.JFrame {
             .addGroup(jpn_productosLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jpn_productosLayout.createSequentialGroup()
-                        .addComponent(jButton26, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton28, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton29, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton27, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jpn_productosLayout.createSequentialGroup()
-                        .addComponent(jButton24, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton22, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton23, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton25, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jpn_productosLayout.createSequentialGroup()
-                        .addComponent(jButton18, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton19, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton20, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton21, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jpn_productosLayout.createSequentialGroup()
-                        .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(19, Short.MAX_VALUE))
+                    .addComponent(btn_refrescoNatural)
+                    .addComponent(btn_carneAsada)
+                    .addComponent(btn_baleadaSencilla))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_gaseosa)
+                    .addComponent(btn_polloChuco)
+                    .addComponent(btn_baleadaCarne))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_desayunoTipico)
+                    .addComponent(btn_cenaTipica)
+                    .addComponent(btn_baleadaTodo))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jpn_productosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_baleadaCarne, btn_baleadaSencilla, btn_baleadaTodo, btn_carneAsada, btn_cenaTipica, btn_desayunoTipico, btn_gaseosa, btn_polloChuco, btn_refrescoNatural});
+
         jpn_productosLayout.setVerticalGroup(
             jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpn_productosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton18, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton21, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton20, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton19, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton24, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton25, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton23, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton22, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton26, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton27, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton29, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton28, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jpn_productosLayout.createSequentialGroup()
+                        .addComponent(btn_baleadaTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_cenaTipica, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_desayunoTipico, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jpn_productosLayout.createSequentialGroup()
+                            .addComponent(btn_baleadaCarne, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btn_polloChuco, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btn_gaseosa, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jpn_productosLayout.createSequentialGroup()
+                            .addComponent(btn_baleadaSencilla, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btn_carneAsada, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btn_refrescoNatural, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jpn_productosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_baleadaCarne, btn_baleadaSencilla, btn_baleadaTodo, btn_carneAsada, btn_cenaTipica, btn_desayunoTipico, btn_gaseosa, btn_polloChuco, btn_refrescoNatural});
 
         tbl_orden.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Nombre del Producto", "Cantidad", "Precio"
@@ -474,12 +595,15 @@ public class Orden extends javax.swing.JFrame {
 
         txt_subtotal.setEditable(false);
         txt_subtotal.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
+        txt_subtotal.setText("0");
 
         txt_total.setEditable(false);
         txt_total.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
+        txt_total.setText("0");
 
         txt_isv.setEditable(false);
         txt_isv.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
+        txt_isv.setText("0");
 
         javax.swing.GroupLayout jpn_totalLayout = new javax.swing.GroupLayout(jpn_total);
         jpn_total.setLayout(jpn_totalLayout);
@@ -557,7 +681,7 @@ public class Orden extends javax.swing.JFrame {
                     .addComponent(txt_pago)
                     .addComponent(txt_cambio)
                     .addComponent(cmb_metodoPago, 0, 263, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
         jpn_metodoPagoLayout.setVerticalGroup(
             jpn_metodoPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -585,12 +709,38 @@ public class Orden extends javax.swing.JFrame {
         btn_imprimir.setForeground(new java.awt.Color(255, 255, 255));
         btn_imprimir.setText("Imprimir factura");
         btn_imprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_imprimir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btn_imprimirMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btn_imprimirMouseExited(evt);
+            }
+        });
+        btn_imprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_imprimirActionPerformed(evt);
+            }
+        });
 
         btn_reiniciarFactura.setBackground(new java.awt.Color(205, 63, 145));
         btn_reiniciarFactura.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
         btn_reiniciarFactura.setForeground(new java.awt.Color(255, 255, 255));
         btn_reiniciarFactura.setText("Reiniciar");
         btn_reiniciarFactura.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_reiniciarFactura.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btn_reiniciarFacturaMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btn_reiniciarFacturaMouseExited(evt);
+            }
+        });
+        btn_reiniciarFactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_reiniciarFacturaActionPerformed(evt);
+            }
+        });
 
         btn_iniciarFactura.setBackground(new java.awt.Color(205, 63, 145));
         btn_iniciarFactura.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
@@ -608,18 +758,49 @@ public class Orden extends javax.swing.JFrame {
                 btn_iniciarFacturaMousePressed(evt);
             }
         });
+        btn_iniciarFactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_iniciarFacturaActionPerformed(evt);
+            }
+        });
 
         btn_pagar.setBackground(new java.awt.Color(205, 63, 145));
         btn_pagar.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
         btn_pagar.setForeground(new java.awt.Color(255, 255, 255));
         btn_pagar.setText("Pagar");
         btn_pagar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_pagar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btn_pagarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btn_pagarMouseExited(evt);
+            }
+        });
+        btn_pagar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_pagarActionPerformed(evt);
+            }
+        });
 
         btn_borrar.setBackground(new java.awt.Color(205, 63, 145));
         btn_borrar.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
         btn_borrar.setForeground(new java.awt.Color(255, 255, 255));
         btn_borrar.setText("Eliminar");
         btn_borrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_borrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btn_borrarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btn_borrarMouseExited(evt);
+            }
+        });
+        btn_borrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_borrarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpn_pagoLayout = new javax.swing.GroupLayout(jpn_pago);
         jpn_pago.setLayout(jpn_pagoLayout);
@@ -677,56 +858,65 @@ public class Orden extends javax.swing.JFrame {
             }
         });
 
+        lbl_nombreProducto.setText("jLabel1");
+
         javax.swing.GroupLayout jpn_principalLayout = new javax.swing.GroupLayout(jpn_principal);
         jpn_principal.setLayout(jpn_principalLayout);
         jpn_principalLayout.setHorizontalGroup(
             jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpn_principalLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jpn_pago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpn_principalLayout.createSequentialGroup()
-                        .addComponent(jpn_numeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jsp_tabla, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jpn_productos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jpn_principalLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lbl_usuario)
+                        .addGroup(jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jpn_principalLayout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(lbl_nombreUsuario)
+                                .addGap(161, 161, 161)
+                                .addComponent(lbl_tituloClientes)
+                                .addGap(131, 131, 131)
+                                .addComponent(lbl_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txt_buscar)
+                                .addGap(32, 32, 32)
+                                .addComponent(lbl_home))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpn_principalLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lbl_nombreProducto)
+                                .addGap(221, 221, 221))))
+                    .addGroup(jpn_principalLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jpn_pago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jpn_principalLayout.createSequentialGroup()
+                                .addComponent(jpn_numeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jsp_tabla, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jpn_productos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(21, 21, 21))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpn_principalLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbl_usuario)
-                .addGap(18, 18, 18)
-                .addComponent(lbl_nombreUsuario)
-                .addGap(161, 161, 161)
-                .addComponent(lbl_tituloClientes)
-                .addGap(131, 131, 131)
-                .addComponent(lbl_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txt_buscar)
-                .addGap(43, 43, 43)
-                .addComponent(lbl_home)
-                .addContainerGap())
         );
         jpn_principalLayout.setVerticalGroup(
             jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpn_principalLayout.createSequentialGroup()
-                .addGroup(jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jpn_principalLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lbl_nombreProducto)
+                        .addGap(13, 13, 13)
                         .addGroup(jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jpn_principalLayout.createSequentialGroup()
-                                .addGap(38, 38, 38)
-                                .addGroup(jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lbl_nombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txt_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lbl_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lbl_tituloClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jpn_principalLayout.createSequentialGroup()
-                                .addGap(21, 21, 21)
-                                .addComponent(lbl_usuario, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(22, 22, 22))
+                            .addComponent(lbl_nombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_tituloClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jpn_principalLayout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(lbl_usuario, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpn_principalLayout.createSequentialGroup()
-                        .addComponent(lbl_home, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)))
+                        .addContainerGap(31, Short.MAX_VALUE)
+                        .addComponent(lbl_home, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(22, 22, 22)
                 .addGroup(jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jpn_productos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jpn_numeros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -741,7 +931,7 @@ public class Orden extends javax.swing.JFrame {
         kGradientPanel1Layout.setHorizontalGroup(
             kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, kGradientPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(38, Short.MAX_VALUE)
                 .addComponent(jpn_principal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
@@ -757,7 +947,7 @@ public class Orden extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(kGradientPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1348, Short.MAX_VALUE)
+            .addComponent(kGradientPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1426, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -790,6 +980,7 @@ public class Orden extends javax.swing.JFrame {
         pago = txt_pago.getText();
         pago+= "1";
         txt_pago.setText(pago);
+        cambio();
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_1ActionPerformed
 
@@ -798,6 +989,7 @@ public class Orden extends javax.swing.JFrame {
         pago = txt_pago.getText();
         pago+= "2";
         txt_pago.setText(pago);
+        cambio();
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_2ActionPerformed
 
@@ -807,6 +999,18 @@ public class Orden extends javax.swing.JFrame {
             return;
         }
         txt_pago.setText(txt_pago.getText().substring(0, (tamaño - 1) ));
+        
+        if(tamaño >= 2){
+           cambio(); 
+        }
+        
+        if(tamaño ==1){
+           txt_cambio.setText("-L" + txt_total.getText()); 
+        }
+
+        if(!txt_pago.getText().contains(".")){
+            hayDecimal = false;
+        }
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_retrocesoActionPerformed
 
@@ -820,6 +1024,7 @@ public class Orden extends javax.swing.JFrame {
         pago = txt_pago.getText();
         pago+= "0";
         txt_pago.setText(pago);
+        cambio();
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_0ActionPerformed
 
@@ -828,6 +1033,7 @@ public class Orden extends javax.swing.JFrame {
         pago = txt_pago.getText();
         pago+= "3";
         txt_pago.setText(pago);
+        cambio();
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_3ActionPerformed
 
@@ -836,6 +1042,7 @@ public class Orden extends javax.swing.JFrame {
         pago = txt_pago.getText();
         pago+= "5";
         txt_pago.setText(pago);
+        cambio();
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_5ActionPerformed
 
@@ -844,6 +1051,7 @@ public class Orden extends javax.swing.JFrame {
         pago = txt_pago.getText();
         pago+= "6";
         txt_pago.setText(pago);
+        cambio();
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_6ActionPerformed
 
@@ -852,6 +1060,7 @@ public class Orden extends javax.swing.JFrame {
         pago = txt_pago.getText();
         pago+= "7";
         txt_pago.setText(pago);
+        cambio();
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_7ActionPerformed
 
@@ -860,6 +1069,7 @@ public class Orden extends javax.swing.JFrame {
         pago = txt_pago.getText();
         pago+= "8";
         txt_pago.setText(pago);
+        cambio();
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_8ActionPerformed
 
@@ -868,6 +1078,7 @@ public class Orden extends javax.swing.JFrame {
         pago = txt_pago.getText();
         pago+= "9";
         txt_pago.setText(pago);
+        cambio();
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_9ActionPerformed
 
@@ -908,7 +1119,7 @@ public class Orden extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_iniciarFacturaMouseExited
 
     private void btn_iniciarFacturaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_iniciarFacturaMousePressed
-        btn_iniciarFactura.setBackground(new Color(40,74,172)); 
+        
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_iniciarFacturaMousePressed
 
@@ -920,6 +1131,126 @@ public class Orden extends javax.swing.JFrame {
     private void txt_buscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_buscarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_buscarActionPerformed
+
+    private void btn_iniciarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_iniciarFacturaActionPerformed
+    btn_iniciarFactura.setBackground(new Color(40,74,172)); 
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_iniciarFacturaActionPerformed
+
+    private void btn_pagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_pagarActionPerformed
+    btn_pagar.setBackground(new Color(40,74,172));
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_pagarActionPerformed
+
+    private void btn_reiniciarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_reiniciarFacturaActionPerformed
+    btn_reiniciarFactura.setBackground(new Color(40,74,172));
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_reiniciarFacturaActionPerformed
+
+    private void btn_pagarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_pagarMouseEntered
+    btn_pagar.setBackground(new Color(156,2,91));
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_pagarMouseEntered
+
+    private void btn_pagarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_pagarMouseExited
+    btn_pagar.setBackground(new Color(205,63,145));
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_pagarMouseExited
+
+    private void btn_reiniciarFacturaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_reiniciarFacturaMouseEntered
+    btn_reiniciarFactura.setBackground(new Color(156,2,91)); 
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_reiniciarFacturaMouseEntered
+
+    private void btn_reiniciarFacturaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_reiniciarFacturaMouseExited
+    btn_reiniciarFactura.setBackground(new Color(205,63,145));    
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_reiniciarFacturaMouseExited
+
+    private void btn_borrarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_borrarMouseEntered
+    btn_borrar.setBackground(new Color(156,2,91)); 
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_borrarMouseEntered
+
+    private void btn_borrarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_borrarMouseExited
+    btn_borrar.setBackground(new Color(205,63,145)); 
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_borrarMouseExited
+
+    private void btn_imprimirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_imprimirMouseEntered
+    btn_imprimir.setBackground(new Color(156,2,91)); 
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_imprimirMouseEntered
+
+    private void btn_imprimirMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_imprimirMouseExited
+    btn_imprimir.setBackground(new Color(205,63,145)); 
+    // TODO add your handling code here:
+    }//GEN-LAST:event_btn_imprimirMouseExited
+
+    private void btn_imprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_imprimirActionPerformed
+    btn_imprimir.setBackground(new Color(40,74,172));
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_imprimirActionPerformed
+
+    private void btn_borrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_borrarActionPerformed
+    btn_borrar.setBackground(new Color(40,74,172));
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_borrarActionPerformed
+
+    private void btn_baleadaSencillaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_baleadaSencillaActionPerformed
+        lbl_nombreProducto.setText(btn_baleadaSencilla.getText() );
+        actualizarDatos();
+        // TODO add y;our handling code here:
+    }//GEN-LAST:event_btn_baleadaSencillaActionPerformed
+
+    private void btn_baleadaCarneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_baleadaCarneActionPerformed
+        lbl_nombreProducto.setText(btn_baleadaCarne.getText() );
+        actualizarDatos();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_baleadaCarneActionPerformed
+
+    private void btn_baleadaTodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_baleadaTodoActionPerformed
+        lbl_nombreProducto.setText(btn_baleadaTodo.getText() );
+        actualizarDatos();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_baleadaTodoActionPerformed
+
+    private void btn_carneAsadaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_carneAsadaActionPerformed
+        lbl_nombreProducto.setText(btn_carneAsada.getText());
+        actualizarDatos();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_carneAsadaActionPerformed
+
+    private void btn_polloChucoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_polloChucoActionPerformed
+        lbl_nombreProducto.setText(btn_polloChuco.getText());
+        actualizarDatos();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_polloChucoActionPerformed
+
+    private void btn_cenaTipicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cenaTipicaActionPerformed
+        lbl_nombreProducto.setText(btn_cenaTipica.getText());
+        actualizarDatos();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_cenaTipicaActionPerformed
+
+    private void btn_refrescoNaturalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_refrescoNaturalActionPerformed
+        lbl_nombreProducto.setText(btn_refrescoNatural.getText());
+        actualizarDatos();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_refrescoNaturalActionPerformed
+
+    private void btn_gaseosaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_gaseosaActionPerformed
+        lbl_nombreProducto.setText(btn_gaseosa.getText());
+        actualizarDatos();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_gaseosaActionPerformed
+
+    private void btn_desayunoTipicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_desayunoTipicoActionPerformed
+        lbl_nombreProducto.setText(btn_desayunoTipico.getText());
+        actualizarDatos();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_desayunoTipicoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -957,30 +1288,23 @@ public class Orden extends javax.swing.JFrame {
     private javax.swing.JButton btn_7;
     private javax.swing.JButton btn_8;
     private javax.swing.JButton btn_9;
+    private javax.swing.JButton btn_baleadaCarne;
+    private javax.swing.JButton btn_baleadaSencilla;
+    private javax.swing.JButton btn_baleadaTodo;
     private javax.swing.JButton btn_borrar;
+    private javax.swing.JButton btn_carneAsada;
+    private javax.swing.JButton btn_cenaTipica;
+    private javax.swing.JButton btn_desayunoTipico;
+    private javax.swing.JButton btn_gaseosa;
     private javax.swing.JButton btn_imprimir;
     private javax.swing.JButton btn_iniciarFactura;
     private javax.swing.JButton btn_pagar;
+    private javax.swing.JButton btn_polloChuco;
     private javax.swing.JButton btn_punto;
+    private javax.swing.JButton btn_refrescoNatural;
     private javax.swing.JButton btn_reiniciarFactura;
     private javax.swing.JButton btn_retroceso;
     private javax.swing.JComboBox<String> cmb_metodoPago;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton15;
-    private javax.swing.JButton jButton16;
-    private javax.swing.JButton jButton17;
-    private javax.swing.JButton jButton18;
-    private javax.swing.JButton jButton19;
-    private javax.swing.JButton jButton20;
-    private javax.swing.JButton jButton21;
-    private javax.swing.JButton jButton22;
-    private javax.swing.JButton jButton23;
-    private javax.swing.JButton jButton24;
-    private javax.swing.JButton jButton25;
-    private javax.swing.JButton jButton26;
-    private javax.swing.JButton jButton27;
-    private javax.swing.JButton jButton28;
-    private javax.swing.JButton jButton29;
     private javax.swing.JPanel jpn_metodoPago;
     private javax.swing.JPanel jpn_numeros;
     private javax.swing.JPanel jpn_pago;
@@ -994,6 +1318,7 @@ public class Orden extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_home;
     private javax.swing.JLabel lbl_isv;
     private javax.swing.JLabel lbl_metodoPago;
+    private javax.swing.JLabel lbl_nombreProducto;
     private javax.swing.JLabel lbl_nombreUsuario;
     private javax.swing.JLabel lbl_pago;
     private javax.swing.JLabel lbl_subtotal;
