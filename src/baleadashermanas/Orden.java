@@ -39,6 +39,7 @@ public class Orden extends javax.swing.JFrame {
     boolean hayDecimal = false;
     Statement stmt = null;
     Connection con = null;
+    int filaSeleccionada;
 
     /**
      * Creates new form Orden
@@ -49,8 +50,12 @@ public class Orden extends javax.swing.JFrame {
         txt_subtotal.requestFocus();
         lbl_nombreUsuario.setText(nombreUsuario);
         this.con = ConexionBD.obtenerConexion();
-        lbl_nombreProducto.setVisible(false);
-        //lbl_idFactura.setVisible(false);
+        /*lbl_nombreProducto.setVisible(false);
+        lbl_idFactura.setVisible(false);
+        lbl_idCliente.setVisible(false);
+        lbl_idProducto.setVisible(false);
+        id_detalle.setVisible(false);     
+        */
         buscarClientes();
         clientesArray();
     }
@@ -106,9 +111,20 @@ public class Orden extends javax.swing.JFrame {
                 datos[0] = rs.getString("nombreproducto");
                 datos[1] = "1";
                 String precio = currencyFormatter.format(rs.getDouble("precio")).substring(1);
-                datos[2] = precio;
+                datos[2] = precio;       
                 model.addRow(datos);
                 subtotal = rs.getDouble("precio");
+                lbl_idProducto.setText(rs.getString("idproducto"));
+                guardarDetalle();
+                int indiceUltimaFila = tbl_orden.getRowCount() - 1;
+                model.removeRow(indiceUltimaFila);
+                String[] datos2 = new String[4];
+                datos2[0] = rs.getString("nombreproducto");
+                datos2[1] = "1";              
+                datos2[2] = precio;
+                datos2[3] = lbl_iddetalle.getText();
+                model.addRow(datos2);
+                
             }
             double totalAnterior = Double.parseDouble(txt_total.getText());
             double totalNuevo = totalAnterior + subtotal;
@@ -124,7 +140,7 @@ public class Orden extends javax.swing.JFrame {
             txt_subtotal.setText(subtotalFinal);
             txt_isv.setText(isvFinal);
             txt_total.setText(totalFinal);
-            habilitarNumeros();
+            habilitarNumeros(true);
         } catch (Exception e) {
             System.err.println(e);
         }
@@ -141,19 +157,73 @@ public class Orden extends javax.swing.JFrame {
         txt_cambio.setText(cambioTotal);
     }
 
-    public void habilitarNumeros() {
-        btn_retroceso.setEnabled(true);
-        btn_punto.setEnabled(true);
-        btn_0.setEnabled(true);
-        btn_1.setEnabled(true);
-        btn_2.setEnabled(true);
-        btn_3.setEnabled(true);
-        btn_4.setEnabled(true);
-        btn_5.setEnabled(true);
-        btn_6.setEnabled(true);
-        btn_7.setEnabled(true);
-        btn_8.setEnabled(true);
-        btn_9.setEnabled(true);
+    public void habilitarNumeros(Boolean accion) {
+        btn_retroceso.setEnabled(accion);
+        btn_punto.setEnabled(accion);
+        btn_0.setEnabled(accion);
+        btn_1.setEnabled(accion);
+        btn_2.setEnabled(accion);
+        btn_3.setEnabled(accion);
+        btn_4.setEnabled(accion);
+        btn_5.setEnabled(accion);
+        btn_6.setEnabled(accion);
+        btn_7.setEnabled(accion);
+        btn_8.setEnabled(accion);
+        btn_9.setEnabled(accion);
+    }
+    
+    public void habilitarProductos(Boolean accion){
+        btn_producto1.setEnabled(accion);
+        btn_producto2.setEnabled(accion);
+        btn_producto3.setEnabled(accion);
+        btn_producto4.setEnabled(accion);
+        btn_producto5.setEnabled(accion);
+        btn_producto6.setEnabled(accion);
+        btn_producto7.setEnabled(accion);
+        btn_producto8.setEnabled(accion);
+        btn_producto9.setEnabled(accion);
+    }
+    
+    public void accionesIniciar(){
+        btn_iniciarFactura.setEnabled(false);
+        btn_cancelarFactura.setEnabled(true);
+        btn_pagar.setEnabled(true);
+        btn_imprimir.setEnabled(true);
+    }
+    
+    public void botonesPorDefecto(){
+        btn_iniciarFactura.setEnabled(true);
+        btn_cancelarFactura.setEnabled(false);
+        btn_eliminar.setEnabled(false);
+        btn_pagar.setEnabled(false);
+        btn_imprimir.setEnabled(false);
+    }
+    
+    public void deleteAllRows(final DefaultTableModel model) {
+    for( int i = model.getRowCount() - 1; i >= 0; i-- ) {
+        model.removeRow(i);
+    }
+}
+    
+    public void accionesCancelar(){
+        lbl_nombreProducto.setText("");
+        lbl_idFactura.setText("");
+        lbl_idCliente.setText("");
+        lbl_idProducto.setText("");
+        lbl_iddetalle.setText("");
+        txt_subtotal.setText("0");
+        txt_isv.setText("0");
+        txt_total.setText("0");
+        txt_pago.setText("");
+        cmb_metodoPago.setSelectedItem("Seleccione el método");
+        txt_cambio.setText("");
+        cmb_cliente.setEnabled(true);
+        cmb_cliente.setSelectedItem("1. Consumidor Final");
+        habilitarNumeros(false);
+        habilitarProductos(false);
+        botonesPorDefecto();  
+        DefaultTableModel model = (DefaultTableModel) tbl_orden.getModel();
+        deleteAllRows(model);
     }
 
     public String capturarIdEmpleado() {
@@ -171,6 +241,22 @@ public class Orden extends javax.swing.JFrame {
         }
         return idEmpleado;
     }
+    
+    public void capturarIdFactura() {
+        String idFactura = "";
+        try {
+            Statement st = con.createStatement();
+            String sql = "Select top 1 * from factura_encabezado order by idfactura desc";
+            ResultSet rs = st.executeQuery(sql);
+            if (rs.next()) {
+                idFactura = rs.getString("idfactura");
+                lbl_idFactura.setText(idFactura);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        lbl_idFactura.setText(idFactura);
+    }
 
     public String capturarIdCliente() {
         String idCliente = "";
@@ -183,20 +269,39 @@ public class Orden extends javax.swing.JFrame {
                 String string = textoSeparado[i];
                 JOptionPane.showMessageDialog(this,string);
             }
-            
-            
-            
-            //String sql = "Select idcliente from cliente where id_cliente = '" w+ lbl_nombreUsuario.getText() + "'";
-            /*ResultSet rs = st.executeQuery(sql);
-            if (rs.next()) {
-                idCliente = rs.getString("idcliente");
-                return idCliente;
-            }*/ 
         } catch (SQLException ex) {
             Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
         }
         return idCliente;
     }
+    
+    public void guardarDetalle(){
+        try { 
+            PreparedStatement ps;
+            ResultSet rs;    
+            ps = con.prepareStatement("INSERT INTO factura_detalle (idfactura, idproducto, cantidadfactura, precio)"
+                    + "VALUES(?,?,?,?)");
+            ps.setString(1, lbl_idFactura.getText());
+            ps.setString(2, lbl_idProducto.getText());
+            int indiceUltimaFila = tbl_orden.getRowCount() - 1;
+            String cantidadProducto = tbl_orden.getValueAt(indiceUltimaFila, 1).toString();
+            String precio = tbl_orden.getValueAt(indiceUltimaFila, 2).toString();
+            ps.setString(3, cantidadProducto);
+            ps.setString(4, precio);
+            int res = ps.executeUpdate();
+            if (res > 0) {  
+                Statement st = con.createStatement();
+                String sql = "Select top 1 * from factura_detalle order by iddetalle desc";
+                ResultSet rs1 = st.executeQuery(sql);
+                if (rs1.next()) {
+                     lbl_iddetalle.setText(rs1.getString("iddetalle"));
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -227,15 +332,15 @@ public class Orden extends javax.swing.JFrame {
         btn_punto = new javax.swing.JButton();
         btn_retroceso = new javax.swing.JButton();
         jpn_productos = new javax.swing.JPanel();
-        btn_baleadaSencilla = new javax.swing.JButton();
-        btn_refrescoNatural = new javax.swing.JButton();
-        btn_carneAsada = new javax.swing.JButton();
-        btn_baleadaCarne = new javax.swing.JButton();
-        btn_polloChuco = new javax.swing.JButton();
-        btn_gaseosa = new javax.swing.JButton();
-        btn_cenaTipica = new javax.swing.JButton();
-        btn_desayunoTipico = new javax.swing.JButton();
-        btn_baleadaTodo = new javax.swing.JButton();
+        btn_producto1 = new javax.swing.JButton();
+        btn_producto2 = new javax.swing.JButton();
+        btn_producto3 = new javax.swing.JButton();
+        btn_producto4 = new javax.swing.JButton();
+        btn_producto5 = new javax.swing.JButton();
+        btn_producto6 = new javax.swing.JButton();
+        btn_producto7 = new javax.swing.JButton();
+        btn_producto8 = new javax.swing.JButton();
+        btn_producto9 = new javax.swing.JButton();
         jsp_tabla = new javax.swing.JScrollPane();
         tbl_orden = new javax.swing.JTable();
         jpn_pago = new javax.swing.JPanel();
@@ -254,14 +359,17 @@ public class Orden extends javax.swing.JFrame {
         txt_pago = new javax.swing.JTextField();
         cmb_metodoPago = new javax.swing.JComboBox<>();
         btn_imprimir = new javax.swing.JButton();
-        btn_reiniciarFactura = new javax.swing.JButton();
+        btn_cancelarFactura = new javax.swing.JButton();
         btn_iniciarFactura = new javax.swing.JButton();
         btn_pagar = new javax.swing.JButton();
-        btn_borrar = new javax.swing.JButton();
+        btn_eliminar = new javax.swing.JButton();
         lbl_cliente = new javax.swing.JLabel();
         lbl_nombreProducto = new javax.swing.JLabel();
         cmb_cliente = new javax.swing.JComboBox<>();
         lbl_idCliente = new javax.swing.JLabel();
+        lbl_idFactura = new javax.swing.JLabel();
+        lbl_idProducto = new javax.swing.JLabel();
+        lbl_iddetalle = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -473,120 +581,129 @@ public class Orden extends javax.swing.JFrame {
 
         jpn_productos.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
-        btn_baleadaSencilla.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        btn_baleadaSencilla.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleadasencilla.jpg"))); // NOI18N
-        btn_baleadaSencilla.setText("Baleada Sencilla");
-        btn_baleadaSencilla.setToolTipText("");
-        btn_baleadaSencilla.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btn_baleadaSencilla.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btn_baleadaSencilla.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btn_baleadaSencilla.addActionListener(new java.awt.event.ActionListener() {
+        btn_producto1.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_producto1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleadasencilla.jpg"))); // NOI18N
+        btn_producto1.setText("Baleada Sencilla");
+        btn_producto1.setToolTipText("");
+        btn_producto1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_producto1.setEnabled(false);
+        btn_producto1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_producto1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_producto1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_baleadaSencillaActionPerformed(evt);
+                btn_producto1ActionPerformed(evt);
             }
         });
 
-        btn_refrescoNatural.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        btn_refrescoNatural.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/refresconatural.jpeg"))); // NOI18N
-        btn_refrescoNatural.setText("Refresco Natural");
-        btn_refrescoNatural.setToolTipText("");
-        btn_refrescoNatural.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btn_refrescoNatural.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btn_refrescoNatural.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btn_refrescoNatural.addActionListener(new java.awt.event.ActionListener() {
+        btn_producto2.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_producto2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleadacarne.jpg"))); // NOI18N
+        btn_producto2.setText("Baleada Carne");
+        btn_producto2.setToolTipText("");
+        btn_producto2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_producto2.setEnabled(false);
+        btn_producto2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_producto2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_producto2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_refrescoNaturalActionPerformed(evt);
+                btn_producto2ActionPerformed(evt);
             }
         });
 
-        btn_carneAsada.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        btn_carneAsada.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/carneasada.jpg"))); // NOI18N
-        btn_carneAsada.setText("Carne Asada");
-        btn_carneAsada.setToolTipText("");
-        btn_carneAsada.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btn_carneAsada.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btn_carneAsada.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btn_carneAsada.addActionListener(new java.awt.event.ActionListener() {
+        btn_producto3.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_producto3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada-con-Todo.png"))); // NOI18N
+        btn_producto3.setText("Baleada con Todo");
+        btn_producto3.setToolTipText("");
+        btn_producto3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_producto3.setEnabled(false);
+        btn_producto3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_producto3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_producto3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_carneAsadaActionPerformed(evt);
+                btn_producto3ActionPerformed(evt);
             }
         });
 
-        btn_baleadaCarne.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        btn_baleadaCarne.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleadacarne.jpg"))); // NOI18N
-        btn_baleadaCarne.setText("Baleada Carne");
-        btn_baleadaCarne.setToolTipText("");
-        btn_baleadaCarne.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btn_baleadaCarne.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btn_baleadaCarne.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btn_baleadaCarne.addActionListener(new java.awt.event.ActionListener() {
+        btn_producto4.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_producto4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/carneasada.jpg"))); // NOI18N
+        btn_producto4.setText("Carne Asada");
+        btn_producto4.setToolTipText("");
+        btn_producto4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_producto4.setEnabled(false);
+        btn_producto4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_producto4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_producto4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_baleadaCarneActionPerformed(evt);
+                btn_producto4ActionPerformed(evt);
             }
         });
 
-        btn_polloChuco.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        btn_polloChuco.setIcon(new javax.swing.ImageIcon("C:\\Users\\cmcha\\Documents\\NetBeansProjects\\BaleadasHermanas\\BaleadasHermanas\\src\\Img\\pollo.png")); // NOI18N
-        btn_polloChuco.setText("Pollo Chuco");
-        btn_polloChuco.setToolTipText("");
-        btn_polloChuco.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btn_polloChuco.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btn_polloChuco.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btn_polloChuco.addActionListener(new java.awt.event.ActionListener() {
+        btn_producto5.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_producto5.setIcon(new javax.swing.ImageIcon("C:\\Users\\cmcha\\Documents\\NetBeansProjects\\BaleadasHermanas\\BaleadasHermanas\\src\\Img\\pollo.png")); // NOI18N
+        btn_producto5.setText("Pollo Chuco");
+        btn_producto5.setToolTipText("");
+        btn_producto5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_producto5.setEnabled(false);
+        btn_producto5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_producto5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_producto5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_polloChucoActionPerformed(evt);
+                btn_producto5ActionPerformed(evt);
             }
         });
 
-        btn_gaseosa.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        btn_gaseosa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/logococa.jpg"))); // NOI18N
-        btn_gaseosa.setText("Gaseosa");
-        btn_gaseosa.setToolTipText("");
-        btn_gaseosa.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btn_gaseosa.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btn_gaseosa.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btn_gaseosa.addActionListener(new java.awt.event.ActionListener() {
+        btn_producto6.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_producto6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/cena.jpg"))); // NOI18N
+        btn_producto6.setText("Cena Típica");
+        btn_producto6.setToolTipText("");
+        btn_producto6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_producto6.setEnabled(false);
+        btn_producto6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_producto6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_producto6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_gaseosaActionPerformed(evt);
+                btn_producto6ActionPerformed(evt);
             }
         });
 
-        btn_cenaTipica.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        btn_cenaTipica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/cena.jpg"))); // NOI18N
-        btn_cenaTipica.setText("Cena Típica");
-        btn_cenaTipica.setToolTipText("");
-        btn_cenaTipica.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btn_cenaTipica.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btn_cenaTipica.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btn_cenaTipica.addActionListener(new java.awt.event.ActionListener() {
+        btn_producto7.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_producto7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/refresconatural.jpeg"))); // NOI18N
+        btn_producto7.setText("Refresco Natural");
+        btn_producto7.setToolTipText("");
+        btn_producto7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_producto7.setEnabled(false);
+        btn_producto7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_producto7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_producto7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_cenaTipicaActionPerformed(evt);
+                btn_producto7ActionPerformed(evt);
             }
         });
 
-        btn_desayunoTipico.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        btn_desayunoTipico.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/desayunojpg.jpg"))); // NOI18N
-        btn_desayunoTipico.setText("Desayuno Típico");
-        btn_desayunoTipico.setToolTipText("");
-        btn_desayunoTipico.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btn_desayunoTipico.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btn_desayunoTipico.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btn_desayunoTipico.addActionListener(new java.awt.event.ActionListener() {
+        btn_producto8.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_producto8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/logococa.jpg"))); // NOI18N
+        btn_producto8.setText("Gaseosa");
+        btn_producto8.setToolTipText("");
+        btn_producto8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_producto8.setEnabled(false);
+        btn_producto8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_producto8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_producto8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_desayunoTipicoActionPerformed(evt);
+                btn_producto8ActionPerformed(evt);
             }
         });
 
-        btn_baleadaTodo.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        btn_baleadaTodo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/baleada-con-Todo.png"))); // NOI18N
-        btn_baleadaTodo.setText("Baleada con Todo");
-        btn_baleadaTodo.setToolTipText("");
-        btn_baleadaTodo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btn_baleadaTodo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btn_baleadaTodo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btn_baleadaTodo.addActionListener(new java.awt.event.ActionListener() {
+        btn_producto9.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btn_producto9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/desayunojpg.jpg"))); // NOI18N
+        btn_producto9.setText("Desayuno Típico");
+        btn_producto9.setToolTipText("");
+        btn_producto9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_producto9.setEnabled(false);
+        btn_producto9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_producto9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btn_producto9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_baleadaTodoActionPerformed(evt);
+                btn_producto9ActionPerformed(evt);
             }
         });
 
@@ -597,23 +714,23 @@ public class Orden extends javax.swing.JFrame {
             .addGroup(jpn_productosLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_refrescoNatural)
-                    .addComponent(btn_carneAsada)
-                    .addComponent(btn_baleadaSencilla))
+                    .addComponent(btn_producto7)
+                    .addComponent(btn_producto4)
+                    .addComponent(btn_producto1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_gaseosa)
-                    .addComponent(btn_polloChuco)
-                    .addComponent(btn_baleadaCarne))
+                    .addComponent(btn_producto8)
+                    .addComponent(btn_producto5)
+                    .addComponent(btn_producto2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_desayunoTipico)
-                    .addComponent(btn_cenaTipica)
-                    .addComponent(btn_baleadaTodo))
+                    .addComponent(btn_producto9)
+                    .addComponent(btn_producto6)
+                    .addComponent(btn_producto3))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jpn_productosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_baleadaCarne, btn_baleadaSencilla, btn_baleadaTodo, btn_carneAsada, btn_cenaTipica, btn_desayunoTipico, btn_gaseosa, btn_polloChuco, btn_refrescoNatural});
+        jpn_productosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_producto1, btn_producto2, btn_producto3, btn_producto4, btn_producto5, btn_producto6, btn_producto7, btn_producto8, btn_producto9});
 
         jpn_productosLayout.setVerticalGroup(
             jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -621,38 +738,43 @@ public class Orden extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jpn_productosLayout.createSequentialGroup()
-                        .addComponent(btn_baleadaTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_producto3, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_cenaTipica, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_producto6, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_desayunoTipico, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btn_producto9, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jpn_productosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jpn_productosLayout.createSequentialGroup()
-                            .addComponent(btn_baleadaCarne, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btn_producto2, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btn_polloChuco, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btn_producto5, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btn_gaseosa, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btn_producto8, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jpn_productosLayout.createSequentialGroup()
-                            .addComponent(btn_baleadaSencilla, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btn_producto1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btn_carneAsada, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btn_producto4, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btn_refrescoNatural, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(btn_producto7, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jpn_productosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_baleadaCarne, btn_baleadaSencilla, btn_baleadaTodo, btn_carneAsada, btn_cenaTipica, btn_desayunoTipico, btn_gaseosa, btn_polloChuco, btn_refrescoNatural});
+        jpn_productosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_producto1, btn_producto2, btn_producto3, btn_producto4, btn_producto5, btn_producto6, btn_producto7, btn_producto8, btn_producto9});
 
         tbl_orden.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Nombre del Producto", "Cantidad", "Precio"
+                "Nombre del Producto", "Cantidad", "Precio", "ID"
             }
         ));
         tbl_orden.setRowHeight(18);
+        tbl_orden.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_ordenMouseClicked(evt);
+            }
+        });
         jsp_tabla.setViewportView(tbl_orden);
 
         jpn_pago.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -740,6 +862,7 @@ public class Orden extends javax.swing.JFrame {
         cmb_metodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione el método", "Efectivo", "Tarjeta" }));
         cmb_metodoPago.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         cmb_metodoPago.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cmb_metodoPago.setEnabled(false);
 
         javax.swing.GroupLayout jpn_metodoPagoLayout = new javax.swing.GroupLayout(jpn_metodoPago);
         jpn_metodoPago.setLayout(jpn_metodoPagoLayout);
@@ -784,6 +907,7 @@ public class Orden extends javax.swing.JFrame {
         btn_imprimir.setForeground(new java.awt.Color(255, 255, 255));
         btn_imprimir.setText("Imprimir factura");
         btn_imprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_imprimir.setEnabled(false);
         btn_imprimir.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btn_imprimirMouseEntered(evt);
@@ -798,22 +922,23 @@ public class Orden extends javax.swing.JFrame {
             }
         });
 
-        btn_reiniciarFactura.setBackground(new java.awt.Color(205, 63, 145));
-        btn_reiniciarFactura.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
-        btn_reiniciarFactura.setForeground(new java.awt.Color(255, 255, 255));
-        btn_reiniciarFactura.setText("Reiniciar");
-        btn_reiniciarFactura.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btn_reiniciarFactura.addMouseListener(new java.awt.event.MouseAdapter() {
+        btn_cancelarFactura.setBackground(new java.awt.Color(205, 63, 145));
+        btn_cancelarFactura.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
+        btn_cancelarFactura.setForeground(new java.awt.Color(255, 255, 255));
+        btn_cancelarFactura.setText("Cancelar");
+        btn_cancelarFactura.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_cancelarFactura.setEnabled(false);
+        btn_cancelarFactura.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_reiniciarFacturaMouseEntered(evt);
+                btn_cancelarFacturaMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn_reiniciarFacturaMouseExited(evt);
+                btn_cancelarFacturaMouseExited(evt);
             }
         });
-        btn_reiniciarFactura.addActionListener(new java.awt.event.ActionListener() {
+        btn_cancelarFactura.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_reiniciarFacturaActionPerformed(evt);
+                btn_cancelarFacturaActionPerformed(evt);
             }
         });
 
@@ -844,6 +969,7 @@ public class Orden extends javax.swing.JFrame {
         btn_pagar.setForeground(new java.awt.Color(255, 255, 255));
         btn_pagar.setText("Pagar");
         btn_pagar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_pagar.setEnabled(false);
         btn_pagar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btn_pagarMouseEntered(evt);
@@ -858,22 +984,23 @@ public class Orden extends javax.swing.JFrame {
             }
         });
 
-        btn_borrar.setBackground(new java.awt.Color(205, 63, 145));
-        btn_borrar.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
-        btn_borrar.setForeground(new java.awt.Color(255, 255, 255));
-        btn_borrar.setText("Eliminar");
-        btn_borrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btn_borrar.addMouseListener(new java.awt.event.MouseAdapter() {
+        btn_eliminar.setBackground(new java.awt.Color(205, 63, 145));
+        btn_eliminar.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
+        btn_eliminar.setForeground(new java.awt.Color(255, 255, 255));
+        btn_eliminar.setText("Eliminar");
+        btn_eliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn_eliminar.setEnabled(false);
+        btn_eliminar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_borrarMouseEntered(evt);
+                btn_eliminarMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn_borrarMouseExited(evt);
+                btn_eliminarMouseExited(evt);
             }
         });
-        btn_borrar.addActionListener(new java.awt.event.ActionListener() {
+        btn_eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_borrarActionPerformed(evt);
+                btn_eliminarActionPerformed(evt);
             }
         });
 
@@ -891,11 +1018,11 @@ public class Orden extends javax.swing.JFrame {
                     .addGroup(jpn_pagoLayout.createSequentialGroup()
                         .addComponent(btn_iniciarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_reiniciarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btn_cancelarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jpn_pagoLayout.createSequentialGroup()
                         .addComponent(btn_pagar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_borrar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btn_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btn_imprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(39, 39, 39))
         );
@@ -907,11 +1034,11 @@ public class Orden extends javax.swing.JFrame {
                     .addGroup(jpn_pagoLayout.createSequentialGroup()
                         .addGroup(jpn_pagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btn_iniciarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btn_reiniciarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btn_cancelarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jpn_pagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btn_pagar, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btn_borrar, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btn_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_imprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jpn_metodoPago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -926,7 +1053,7 @@ public class Orden extends javax.swing.JFrame {
             }
         });
 
-        lbl_nombreProducto.setText("jLabel1");
+        lbl_nombreProducto.setText("nombreProducto");
 
         cmb_cliente.setFont(new java.awt.Font("Roboto", 0, 20)); // NOI18N
         cmb_cliente.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -937,7 +1064,13 @@ public class Orden extends javax.swing.JFrame {
             }
         });
 
-        lbl_idCliente.setText("jLabel1");
+        lbl_idCliente.setText("idcliente");
+
+        lbl_idFactura.setText("idFactura");
+
+        lbl_idProducto.setText("idProducto");
+
+        lbl_iddetalle.setText("idDetalle");
 
         javax.swing.GroupLayout jpn_principalLayout = new javax.swing.GroupLayout(jpn_principal);
         jpn_principal.setLayout(jpn_principalLayout);
@@ -952,7 +1085,7 @@ public class Orden extends javax.swing.JFrame {
                         .addComponent(lbl_nombreUsuario)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpn_principalLayout.createSequentialGroup()
+                            .addGroup(jpn_principalLayout.createSequentialGroup()
                                 .addComponent(lbl_tituloClientes)
                                 .addGap(164, 164, 164)
                                 .addComponent(lbl_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -960,11 +1093,16 @@ public class Orden extends javax.swing.JFrame {
                                 .addComponent(cmb_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(34, 34, 34)
                                 .addComponent(lbl_home))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpn_principalLayout.createSequentialGroup()
+                            .addGroup(jpn_principalLayout.createSequentialGroup()
+                                .addComponent(lbl_iddetalle)
+                                .addGap(153, 153, 153)
+                                .addComponent(lbl_idProducto)
+                                .addGap(126, 126, 126)
+                                .addComponent(lbl_idFactura)
+                                .addGap(137, 137, 137)
                                 .addComponent(lbl_idCliente)
-                                .addGap(149, 149, 149)
-                                .addComponent(lbl_nombreProducto)
-                                .addGap(221, 221, 221))))
+                                .addGap(140, 140, 140)
+                                .addComponent(lbl_nombreProducto))))
                     .addGroup(jpn_principalLayout.createSequentialGroup()
                         .addGap(22, 22, 22)
                         .addGroup(jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -985,7 +1123,10 @@ public class Orden extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(jpn_principalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lbl_nombreProducto)
-                            .addComponent(lbl_idCliente))
+                            .addComponent(lbl_idCliente)
+                            .addComponent(lbl_idFactura)
+                            .addComponent(lbl_idProducto)
+                            .addComponent(lbl_iddetalle))
                         .addGap(18, 18, 18)
                         .addComponent(cmb_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jpn_principalLayout.createSequentialGroup()
@@ -1237,7 +1378,10 @@ public class Orden extends javax.swing.JFrame {
             int res = ps.executeUpdate();
             if (res > 0) {
                 JOptionPane.showMessageDialog(this, "Factura iniciada");
-             
+                capturarIdFactura();
+                habilitarProductos(true);
+                cmb_cliente.setEnabled(false);
+                accionesIniciar();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
@@ -1250,10 +1394,28 @@ public class Orden extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_pagarActionPerformed
 
-    private void btn_reiniciarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_reiniciarFacturaActionPerformed
-        btn_reiniciarFactura.setBackground(new Color(40, 74, 172));
+    private void btn_cancelarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelarFacturaActionPerformed
+        btn_cancelarFactura.setBackground(new Color(40, 74, 172));
+        try {
+                PreparedStatement ps;
+                ps = con.prepareStatement("Delete factura_detalle\n"
+                        + "where idfactura =?");   
+                ps.setString(1, lbl_idFactura.getText());
+                
+                PreparedStatement ps2;
+                ps2 = con.prepareStatement("Delete factura_encabezado\n"
+                        + "where idfactura =?");   
+                ps2.setString(1, lbl_idFactura.getText());
+                
+                JOptionPane.showMessageDialog(this, "Factura cancelada");
+                accionesCancelar();  
+
+            } catch (Exception e) {
+
+            }
+       
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_reiniciarFacturaActionPerformed
+    }//GEN-LAST:event_btn_cancelarFacturaActionPerformed
 
     private void btn_pagarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_pagarMouseEntered
         btn_pagar.setBackground(new Color(156, 2, 91));
@@ -1265,25 +1427,25 @@ public class Orden extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_pagarMouseExited
 
-    private void btn_reiniciarFacturaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_reiniciarFacturaMouseEntered
-        btn_reiniciarFactura.setBackground(new Color(156, 2, 91));
+    private void btn_cancelarFacturaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_cancelarFacturaMouseEntered
+        btn_cancelarFactura.setBackground(new Color(156, 2, 91));
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_reiniciarFacturaMouseEntered
+    }//GEN-LAST:event_btn_cancelarFacturaMouseEntered
 
-    private void btn_reiniciarFacturaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_reiniciarFacturaMouseExited
-        btn_reiniciarFactura.setBackground(new Color(205, 63, 145));
+    private void btn_cancelarFacturaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_cancelarFacturaMouseExited
+        btn_cancelarFactura.setBackground(new Color(205, 63, 145));
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_reiniciarFacturaMouseExited
+    }//GEN-LAST:event_btn_cancelarFacturaMouseExited
 
-    private void btn_borrarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_borrarMouseEntered
-        btn_borrar.setBackground(new Color(156, 2, 91));
+    private void btn_eliminarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_eliminarMouseEntered
+        btn_eliminar.setBackground(new Color(156, 2, 91));
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_borrarMouseEntered
+    }//GEN-LAST:event_btn_eliminarMouseEntered
 
-    private void btn_borrarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_borrarMouseExited
-        btn_borrar.setBackground(new Color(205, 63, 145));
+    private void btn_eliminarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_eliminarMouseExited
+        btn_eliminar.setBackground(new Color(205, 63, 145));
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_borrarMouseExited
+    }//GEN-LAST:event_btn_eliminarMouseExited
 
     private void btn_imprimirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_imprimirMouseEntered
         btn_imprimir.setBackground(new Color(156, 2, 91));
@@ -1300,65 +1462,84 @@ public class Orden extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_imprimirActionPerformed
 
-    private void btn_borrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_borrarActionPerformed
-        btn_borrar.setBackground(new Color(40, 74, 172));
+    private void btn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarActionPerformed
+        btn_eliminar.setBackground(new Color(40, 74, 172));
+            try {
+                PreparedStatement ps;
+                ResultSet rs;
+                ps = con.prepareStatement("Delete factura_detalle\n"
+                        + "where iddetalle =?");   
+                String idDetalle = tbl_orden.getValueAt(filaSeleccionada, 3).toString();
+                ps.setString(1, idDetalle);
+                int res = ps.executeUpdate();
+                if (res > 0) {
+                    JOptionPane.showMessageDialog(this, "Producto eliminado");
+                    DefaultTableModel model = (DefaultTableModel) tbl_orden.getModel();
+                    model.removeRow(filaSeleccionada);
+                    btn_eliminar.setEnabled(false);
+                }
+
+            } catch (Exception e) {
+
+            }
 
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_borrarActionPerformed
+    }//GEN-LAST:event_btn_eliminarActionPerformed
 
-    private void btn_baleadaSencillaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_baleadaSencillaActionPerformed
-        lbl_nombreProducto.setText(btn_baleadaSencilla.getText());
+    private void btn_producto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_producto1ActionPerformed
+        lbl_nombreProducto.setText(btn_producto1.getText());
         actualizarDatos();
         // TODO add y;our handling code here:
-    }//GEN-LAST:event_btn_baleadaSencillaActionPerformed
+    }//GEN-LAST:event_btn_producto1ActionPerformed
 
-    private void btn_baleadaCarneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_baleadaCarneActionPerformed
-        lbl_nombreProducto.setText(btn_baleadaCarne.getText());
+    private void btn_producto2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_producto2ActionPerformed
+        lbl_nombreProducto.setText(btn_producto2.getText());
         actualizarDatos();
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_baleadaCarneActionPerformed
+    }//GEN-LAST:event_btn_producto2ActionPerformed
 
-    private void btn_baleadaTodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_baleadaTodoActionPerformed
-        lbl_nombreProducto.setText(btn_baleadaTodo.getText());
+    private void btn_producto3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_producto3ActionPerformed
+        lbl_nombreProducto.setText(btn_producto3.getText());
         actualizarDatos();
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_baleadaTodoActionPerformed
+    }//GEN-LAST:event_btn_producto3ActionPerformed
 
-    private void btn_carneAsadaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_carneAsadaActionPerformed
-        lbl_nombreProducto.setText(btn_carneAsada.getText());
+    private void btn_producto4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_producto4ActionPerformed
+        lbl_nombreProducto.setText(btn_producto4.getText());
         actualizarDatos();
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_carneAsadaActionPerformed
+    }//GEN-LAST:event_btn_producto4ActionPerformed
 
-    private void btn_polloChucoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_polloChucoActionPerformed
-        lbl_nombreProducto.setText(btn_polloChuco.getText());
+    private void btn_producto5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_producto5ActionPerformed
+        lbl_nombreProducto.setText(btn_producto5.getText());
         actualizarDatos();
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_polloChucoActionPerformed
+    }//GEN-LAST:event_btn_producto5ActionPerformed
 
-    private void btn_cenaTipicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cenaTipicaActionPerformed
-        lbl_nombreProducto.setText(btn_cenaTipica.getText());
+    private void btn_producto6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_producto6ActionPerformed
+        lbl_nombreProducto.setText(btn_producto6.getText());
         actualizarDatos();
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_cenaTipicaActionPerformed
+    }//GEN-LAST:event_btn_producto6ActionPerformed
 
-    private void btn_refrescoNaturalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_refrescoNaturalActionPerformed
-        lbl_nombreProducto.setText(btn_refrescoNatural.getText());
+    private void btn_producto7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_producto7ActionPerformed
+        lbl_nombreProducto.setText(btn_producto7.getText());
         actualizarDatos();
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_refrescoNaturalActionPerformed
+    }//GEN-LAST:event_btn_producto7ActionPerformed
 
-    private void btn_gaseosaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_gaseosaActionPerformed
-        lbl_nombreProducto.setText(btn_gaseosa.getText());
+    private void btn_producto8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_producto8ActionPerformed
+        lbl_nombreProducto.setText(btn_producto8.getText());
         actualizarDatos();
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_gaseosaActionPerformed
+    }//GEN-LAST:event_btn_producto8ActionPerformed
 
-    private void btn_desayunoTipicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_desayunoTipicoActionPerformed
-        lbl_nombreProducto.setText(btn_desayunoTipico.getText());
+    private void btn_producto9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_producto9ActionPerformed
+        lbl_nombreProducto.setText(btn_producto9.getText());
         actualizarDatos();
+
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_desayunoTipicoActionPerformed
+    }//GEN-LAST:event_btn_producto9ActionPerformed
 
     private void cmb_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_clienteActionPerformed
         String string = cmb_cliente.getSelectedItem().toString();
@@ -1366,6 +1547,12 @@ public class Orden extends javax.swing.JFrame {
         lbl_idCliente.setText(array[0]);
         // TODO add your handling code here:
     }//GEN-LAST:event_cmb_clienteActionPerformed
+
+    private void tbl_ordenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_ordenMouseClicked
+        btn_eliminar.setEnabled(true);
+        filaSeleccionada = tbl_orden.getSelectedRow();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tbl_ordenMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1403,21 +1590,21 @@ public class Orden extends javax.swing.JFrame {
     private javax.swing.JButton btn_7;
     private javax.swing.JButton btn_8;
     private javax.swing.JButton btn_9;
-    private javax.swing.JButton btn_baleadaCarne;
-    private javax.swing.JButton btn_baleadaSencilla;
-    private javax.swing.JButton btn_baleadaTodo;
-    private javax.swing.JButton btn_borrar;
-    private javax.swing.JButton btn_carneAsada;
-    private javax.swing.JButton btn_cenaTipica;
-    private javax.swing.JButton btn_desayunoTipico;
-    private javax.swing.JButton btn_gaseosa;
+    private javax.swing.JButton btn_cancelarFactura;
+    private javax.swing.JButton btn_eliminar;
     private javax.swing.JButton btn_imprimir;
     private javax.swing.JButton btn_iniciarFactura;
     private javax.swing.JButton btn_pagar;
-    private javax.swing.JButton btn_polloChuco;
+    private javax.swing.JButton btn_producto1;
+    private javax.swing.JButton btn_producto2;
+    private javax.swing.JButton btn_producto3;
+    private javax.swing.JButton btn_producto4;
+    private javax.swing.JButton btn_producto5;
+    private javax.swing.JButton btn_producto6;
+    private javax.swing.JButton btn_producto7;
+    private javax.swing.JButton btn_producto8;
+    private javax.swing.JButton btn_producto9;
     private javax.swing.JButton btn_punto;
-    private javax.swing.JButton btn_refrescoNatural;
-    private javax.swing.JButton btn_reiniciarFactura;
     private javax.swing.JButton btn_retroceso;
     private javax.swing.JComboBox<String> cmb_cliente;
     private javax.swing.JComboBox<String> cmb_metodoPago;
@@ -1433,6 +1620,9 @@ public class Orden extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_cliente;
     private javax.swing.JLabel lbl_home;
     private javax.swing.JLabel lbl_idCliente;
+    private javax.swing.JLabel lbl_idFactura;
+    private javax.swing.JLabel lbl_idProducto;
+    private javax.swing.JLabel lbl_iddetalle;
     private javax.swing.JLabel lbl_isv;
     private javax.swing.JLabel lbl_metodoPago;
     private javax.swing.JLabel lbl_nombreProducto;
