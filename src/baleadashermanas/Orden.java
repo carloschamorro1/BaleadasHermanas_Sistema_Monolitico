@@ -50,12 +50,11 @@ public class Orden extends javax.swing.JFrame {
         txt_subtotal.requestFocus();
         lbl_nombreUsuario.setText(nombreUsuario);
         this.con = ConexionBD.obtenerConexion();
-        /*lbl_nombreProducto.setVisible(false);
+        lbl_nombreProducto.setVisible(false);
         lbl_idFactura.setVisible(false);
         lbl_idCliente.setVisible(false);
         lbl_idProducto.setVisible(false);
-        id_detalle.setVisible(false);     
-        */
+        lbl_idDetalle.setVisible(false);     
         buscarClientes();
         clientesArray();
     }
@@ -122,7 +121,7 @@ public class Orden extends javax.swing.JFrame {
                 datos2[0] = rs.getString("nombreproducto");
                 datos2[1] = "1";              
                 datos2[2] = precio;
-                datos2[3] = lbl_iddetalle.getText();
+                datos2[3] = lbl_idDetalle.getText();
                 model.addRow(datos2);
                 
             }
@@ -140,7 +139,6 @@ public class Orden extends javax.swing.JFrame {
             txt_subtotal.setText(subtotalFinal);
             txt_isv.setText(isvFinal);
             txt_total.setText(totalFinal);
-            habilitarNumeros(true);
         } catch (Exception e) {
             System.err.println(e);
         }
@@ -189,6 +187,8 @@ public class Orden extends javax.swing.JFrame {
         btn_cancelarFactura.setEnabled(true);
         btn_pagar.setEnabled(true);
         btn_imprimir.setEnabled(true);
+        cmb_metodoPago.setEnabled(true);
+        
     }
     
     public void botonesPorDefecto(){
@@ -210,7 +210,7 @@ public class Orden extends javax.swing.JFrame {
         lbl_idFactura.setText("");
         lbl_idCliente.setText("");
         lbl_idProducto.setText("");
-        lbl_iddetalle.setText("");
+        lbl_idDetalle.setText("");
         txt_subtotal.setText("0");
         txt_isv.setText("0");
         txt_total.setText("0");
@@ -294,11 +294,40 @@ public class Orden extends javax.swing.JFrame {
                 String sql = "Select top 1 * from factura_detalle order by iddetalle desc";
                 ResultSet rs1 = st.executeQuery(sql);
                 if (rs1.next()) {
-                     lbl_iddetalle.setText(rs1.getString("iddetalle"));
+                     lbl_idDetalle.setText(rs1.getString("iddetalle"));
                 }
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+    
+    public void validacionPago(){
+        if(cmb_metodoPago.getSelectedItem().equals("Seleccione el método")){
+            JOptionPane.showMessageDialog(this, "Por favor seleccione el método de pago", "Seleccione el método", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        if(txt_pago.getText().equals("")){
+            JOptionPane.showMessageDialog(this, "Por favor seleccione la cantidad de pago con los botones numéricos", "Pago en blanco", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        if(txt_cambio.getText().equals("")){
+            JOptionPane.showMessageDialog(this, "Por favor seleccione la cantidad de pago con los botones numéricos", "Cambio en blanco", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        double total = Double.parseDouble(txt_total.getText());
+        double pago = Double.parseDouble(txt_pago.getText());
+        
+        if(total > pago){
+            Locale locale = new Locale("es", "HN");
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+            double resto = total - pago;
+            String restoTotal = currencyFormatter.format(resto);
+            JOptionPane.showMessageDialog(this, "Pago insuficiente, faltan: L "+restoTotal+" ", "Pago Insuficiente", JOptionPane.INFORMATION_MESSAGE);
+            return;
         }
     }
     
@@ -369,7 +398,7 @@ public class Orden extends javax.swing.JFrame {
         lbl_idCliente = new javax.swing.JLabel();
         lbl_idFactura = new javax.swing.JLabel();
         lbl_idProducto = new javax.swing.JLabel();
-        lbl_iddetalle = new javax.swing.JLabel();
+        lbl_idDetalle = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -863,6 +892,11 @@ public class Orden extends javax.swing.JFrame {
         cmb_metodoPago.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         cmb_metodoPago.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         cmb_metodoPago.setEnabled(false);
+        cmb_metodoPago.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmb_metodoPagoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpn_metodoPagoLayout = new javax.swing.GroupLayout(jpn_metodoPago);
         jpn_metodoPago.setLayout(jpn_metodoPagoLayout);
@@ -884,13 +918,10 @@ public class Orden extends javax.swing.JFrame {
         jpn_metodoPagoLayout.setVerticalGroup(
             jpn_metodoPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpn_metodoPagoLayout.createSequentialGroup()
-                .addGroup(jpn_metodoPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jpn_metodoPagoLayout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(lbl_metodoPago))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpn_metodoPagoLayout.createSequentialGroup()
-                        .addGap(13, 13, 13)
-                        .addComponent(cmb_metodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap()
+                .addGroup(jpn_metodoPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lbl_metodoPago)
+                    .addComponent(cmb_metodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15)
                 .addGroup(jpn_metodoPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txt_pago, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1070,7 +1101,7 @@ public class Orden extends javax.swing.JFrame {
 
         lbl_idProducto.setText("idProducto");
 
-        lbl_iddetalle.setText("idDetalle");
+        lbl_idDetalle.setText("idDetalle");
 
         javax.swing.GroupLayout jpn_principalLayout = new javax.swing.GroupLayout(jpn_principal);
         jpn_principal.setLayout(jpn_principalLayout);
@@ -1094,7 +1125,7 @@ public class Orden extends javax.swing.JFrame {
                                 .addGap(34, 34, 34)
                                 .addComponent(lbl_home))
                             .addGroup(jpn_principalLayout.createSequentialGroup()
-                                .addComponent(lbl_iddetalle)
+                                .addComponent(lbl_idDetalle)
                                 .addGap(153, 153, 153)
                                 .addComponent(lbl_idProducto)
                                 .addGap(126, 126, 126)
@@ -1126,7 +1157,7 @@ public class Orden extends javax.swing.JFrame {
                             .addComponent(lbl_idCliente)
                             .addComponent(lbl_idFactura)
                             .addComponent(lbl_idProducto)
-                            .addComponent(lbl_iddetalle))
+                            .addComponent(lbl_idDetalle))
                         .addGap(18, 18, 18)
                         .addComponent(cmb_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jpn_principalLayout.createSequentialGroup()
@@ -1365,9 +1396,11 @@ public class Orden extends javax.swing.JFrame {
             ResultSet rs;
             String cai = "35BD6A-0195F4-B34BAA-8B7D13-37791A-2D";
             int totalInicial = 0;
+            int cambioInicial = 0;
+            int pagoInicial = 0;
             ps = con.prepareStatement("INSERT INTO factura_encabezado (cai, idempleado, totalfactura, idcliente,"
-                    + "fecha_factura)"
-                    + "VALUES(?,?,?,?,?)");
+                    + "fecha_factura,cambio_factura,pago_factura)"
+                    + "VALUES(?,?,?,?,?,?,?)");
             ps.setString(1, cai);
             String idEmpleado = capturarIdEmpleado();
             String idCliente = lbl_idCliente.getText();
@@ -1375,9 +1408,10 @@ public class Orden extends javax.swing.JFrame {
             ps.setString(3, String.valueOf(totalInicial));
             ps.setString(4, idCliente);
             ps.setString(5, fecha);
+            ps.setString(6, String.valueOf(cambioInicial));
+            ps.setString(7, String.valueOf(pagoInicial));
             int res = ps.executeUpdate();
             if (res > 0) {
-                JOptionPane.showMessageDialog(this, "Factura iniciada");
                 capturarIdFactura();
                 habilitarProductos(true);
                 cmb_cliente.setEnabled(false);
@@ -1391,6 +1425,29 @@ public class Orden extends javax.swing.JFrame {
 
     private void btn_pagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_pagarActionPerformed
         btn_pagar.setBackground(new Color(40, 74, 172));
+        try{
+           validacionPago(); 
+           PreparedStatement ps;
+            ResultSet rs;
+            ps = con.prepareStatement("Update factura_encabezado\n" +
+                                      "set totalfactura = ?,\n" +
+                                      "cambio_factura = ?, \n" +
+                                      "pago_factura =? "+
+                                      "where idfactura = ?");
+            ps.setString(1, txt_total.getText());
+            String cambio = txt_cambio.getText().substring(1);
+            ps.setString(2, cambio);
+            ps.setString(3, txt_pago.getText());
+            ps.setString(4, lbl_idFactura.getText());
+            int res = ps.executeUpdate();
+            if (res > 0) {
+                JOptionPane.showMessageDialog(this, "Factura pagada");
+                accionesCancelar();
+            }
+        }catch(Exception e){
+            
+        }
+        
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_pagarActionPerformed
 
@@ -1554,6 +1611,15 @@ public class Orden extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tbl_ordenMouseClicked
 
+    private void cmb_metodoPagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_metodoPagoActionPerformed
+        if(cmb_metodoPago.getSelectedItem().equals("Seleccione el método")){
+            habilitarNumeros(false);
+        }else{
+             habilitarNumeros(true);
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmb_metodoPagoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1620,9 +1686,9 @@ public class Orden extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_cliente;
     private javax.swing.JLabel lbl_home;
     private javax.swing.JLabel lbl_idCliente;
+    private javax.swing.JLabel lbl_idDetalle;
     private javax.swing.JLabel lbl_idFactura;
     private javax.swing.JLabel lbl_idProducto;
-    private javax.swing.JLabel lbl_iddetalle;
     private javax.swing.JLabel lbl_isv;
     private javax.swing.JLabel lbl_metodoPago;
     private javax.swing.JLabel lbl_nombreProducto;
