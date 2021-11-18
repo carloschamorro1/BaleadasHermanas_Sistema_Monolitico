@@ -300,10 +300,10 @@ public class Login extends javax.swing.JFrame {
         click++;
         if(click%2 != 0){
             
-            lbl_vercontraseña.setIcon(new javax.swing.ImageIcon("C:\\Users\\cmcha\\Documents\\NetBeansProjects\\BaleadasHermanas\\BaleadasHermanas\\src\\Img\\ojo.png"));
+            lbl_vercontraseña.setIcon(new javax.swing.ImageIcon("src\\Img\\ojo.png"));
             txt_contraseña.setEchoChar((char)0);
         }else{
-            lbl_vercontraseña.setIcon(new javax.swing.ImageIcon("C:\\Users\\cmcha\\Documents\\NetBeansProjects\\BaleadasHermanas\\BaleadasHermanas\\src\\Img\\ojo-cerrado.png"));
+            lbl_vercontraseña.setIcon(new javax.swing.ImageIcon("src\\Img\\ojo-cerrado.png"));
             txt_contraseña.setEchoChar('*');
         } 
         // TODO add your handling code here:

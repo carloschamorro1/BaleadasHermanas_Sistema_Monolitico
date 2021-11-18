@@ -11,6 +11,7 @@ import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.placeholder.PlaceHolder;
 import java.awt.Color;
 import java.awt.Toolkit;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,16 +20,26 @@ import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JRSaveContributor;
+import net.sf.jasperreports.view.JRViewer;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -186,7 +197,6 @@ public class Orden extends javax.swing.JFrame {
         btn_iniciarFactura.setEnabled(false);
         btn_cancelarFactura.setEnabled(true);
         btn_pagar.setEnabled(true);
-        btn_imprimir.setEnabled(true);
         cmb_metodoPago.setEnabled(true);
         
     }
@@ -196,7 +206,6 @@ public class Orden extends javax.swing.JFrame {
         btn_cancelarFactura.setEnabled(false);
         btn_eliminar.setEnabled(false);
         btn_pagar.setEnabled(false);
-        btn_imprimir.setEnabled(false);
     }
     
     public void deleteAllRows(final DefaultTableModel model) {
@@ -331,6 +340,35 @@ public class Orden extends javax.swing.JFrame {
         }
     }
     
+    public void imprimirFactura(){
+        try {
+            JasperReport reporte = null;
+            String path = "src\\reportes\\factura.jasper";
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("numeroFactura",lbl_idFactura.getText());
+            parameters.put("cai","35BD6A-0195F4-B34BAA-8B7D13-37791A-2D");
+            reporte = (JasperReport) JRLoader.loadObjectFromFile(path);
+            JasperPrint jprint;
+            jprint=JasperFillManager.fillReport(reporte,parameters,con);
+            JasperViewer view = new JasperViewer(jprint,false);
+            final JRViewer viewer = new JRViewer(jprint);
+            JRSaveContributor[] contrbs = viewer.getSaveContributors();
+
+            for (JRSaveContributor saveContributor : contrbs)
+            {
+                if (!(saveContributor instanceof net.sf.jasperreports.view.save.JRDocxSaveContributor ||
+                    saveContributor instanceof net.sf.jasperreports.view.save.JRSingleSheetXlsSaveContributor
+                    || saveContributor instanceof net.sf.jasperreports.view.save.JRPdfSaveContributor))
+            viewer.removeSaveContributor(saveContributor);
+        }
+        view.setContentPane(viewer);
+        view.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        view.setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,e.getMessage());
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -387,7 +425,6 @@ public class Orden extends javax.swing.JFrame {
         txt_cambio = new javax.swing.JTextField();
         txt_pago = new javax.swing.JTextField();
         cmb_metodoPago = new javax.swing.JComboBox<>();
-        btn_imprimir = new javax.swing.JButton();
         btn_cancelarFactura = new javax.swing.JButton();
         btn_iniciarFactura = new javax.swing.JButton();
         btn_pagar = new javax.swing.JButton();
@@ -933,26 +970,6 @@ public class Orden extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        btn_imprimir.setBackground(new java.awt.Color(205, 63, 145));
-        btn_imprimir.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
-        btn_imprimir.setForeground(new java.awt.Color(255, 255, 255));
-        btn_imprimir.setText("Imprimir factura");
-        btn_imprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btn_imprimir.setEnabled(false);
-        btn_imprimir.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn_imprimirMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn_imprimirMouseExited(evt);
-            }
-        });
-        btn_imprimir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_imprimirActionPerformed(evt);
-            }
-        });
-
         btn_cancelarFactura.setBackground(new java.awt.Color(205, 63, 145));
         btn_cancelarFactura.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
         btn_cancelarFactura.setForeground(new java.awt.Color(255, 255, 255));
@@ -1045,33 +1062,30 @@ public class Orden extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jpn_metodoPago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addGroup(jpn_pagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jpn_pagoLayout.createSequentialGroup()
-                        .addComponent(btn_iniciarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_cancelarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jpn_pagoLayout.createSequentialGroup()
-                        .addComponent(btn_pagar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btn_imprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jpn_pagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_pagar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_iniciarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jpn_pagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_cancelarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(39, 39, 39))
         );
         jpn_pagoLayout.setVerticalGroup(
             jpn_pagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpn_pagoLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jpn_pagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_iniciarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_cancelarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jpn_pagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_pagar, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(19, 19, 19))
             .addGroup(jpn_pagoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jpn_pagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jpn_pagoLayout.createSequentialGroup()
-                        .addGroup(jpn_pagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btn_iniciarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btn_cancelarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jpn_pagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btn_pagar, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btn_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_imprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jpn_metodoPago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jpn_total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1197,7 +1211,7 @@ public class Orden extends javax.swing.JFrame {
             .addGroup(kGradientPanel1Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(jpn_principal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1442,6 +1456,7 @@ public class Orden extends javax.swing.JFrame {
             int res = ps.executeUpdate();
             if (res > 0) {
                 JOptionPane.showMessageDialog(this, "Factura pagada");
+                imprimirFactura();
                 accionesCancelar();
             }
         }catch(Exception e){
@@ -1503,21 +1518,6 @@ public class Orden extends javax.swing.JFrame {
         btn_eliminar.setBackground(new Color(205, 63, 145));
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_eliminarMouseExited
-
-    private void btn_imprimirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_imprimirMouseEntered
-        btn_imprimir.setBackground(new Color(156, 2, 91));
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_imprimirMouseEntered
-
-    private void btn_imprimirMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_imprimirMouseExited
-        btn_imprimir.setBackground(new Color(205, 63, 145));
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_imprimirMouseExited
-
-    private void btn_imprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_imprimirActionPerformed
-        btn_imprimir.setBackground(new Color(40, 74, 172));
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_imprimirActionPerformed
 
     private void btn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarActionPerformed
         btn_eliminar.setBackground(new Color(40, 74, 172));
@@ -1658,7 +1658,6 @@ public class Orden extends javax.swing.JFrame {
     private javax.swing.JButton btn_9;
     private javax.swing.JButton btn_cancelarFactura;
     private javax.swing.JButton btn_eliminar;
-    private javax.swing.JButton btn_imprimir;
     private javax.swing.JButton btn_iniciarFactura;
     private javax.swing.JButton btn_pagar;
     private javax.swing.JButton btn_producto1;
