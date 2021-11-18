@@ -23,7 +23,8 @@ from factura_encabezado as fe
 inner join factura_detalle as fd on fd.idfactura = fe.idfactura
 inner join inventario as i on i.idproducto = fd.idproducto
 inner join cliente as c on c.idcliente = fe.idcliente
-inner join empleado as e on e.idempleado = fe.idempleado]]>
+inner join empleado as e on e.idempleado = fe.idempleado
+where fe.idfactura = $P{numeroFactura}]]>
 	</queryString>
 	<field name="nombre_empleado" class="java.lang.String"/>
 	<field name="nombre_cliente" class="java.lang.String"/>
@@ -38,7 +39,7 @@ inner join empleado as e on e.idempleado = fe.idempleado]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="203" splitType="Stretch">
+		<band height="198" splitType="Stretch">
 			<staticText>
 				<reportElement style="Title" x="67" y="20" width="445" height="62" uuid="b55c18c3-5b1b-4cdc-b12a-effbc3bc2344"/>
 				<textElement verticalAlignment="Middle">
@@ -179,19 +180,19 @@ inner join empleado as e on e.idempleado = fe.idempleado]]>
 		<band height="55" splitType="Stretch">
 			<staticText>
 				<reportElement style="Column header" x="291" y="4" width="103" height="15" forecolor="#000000" uuid="5b2bde64-03cb-43d2-8d7c-8159d284436a"/>
-				<text><![CDATA[Total]]></text>
+				<text><![CDATA[Total L]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement style="Detail" x="394" y="4" width="141" height="15" uuid="659efaee-13c6-482d-a692-79bfe492125a"/>
 				<textFieldExpression><![CDATA[$F{totalfactura}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Column header" x="291" y="19" width="103" height="15" forecolor="#000000" uuid="bfa4900f-aabe-4288-a0eb-3dc9711b3185"/>
-				<text><![CDATA[Pago]]></text>
+				<text><![CDATA[Pago L]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="291" y="34" width="103" height="15" forecolor="#000000" uuid="08dbbef3-8469-45ea-a93d-499b3653ce82"/>
-				<text><![CDATA[Cambio]]></text>
+				<text><![CDATA[Cambio L]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
 				<reportElement style="Detail" x="394" y="34" width="141" height="15" uuid="bb6936db-b539-4aac-8383-d22d12514c3c"/>
