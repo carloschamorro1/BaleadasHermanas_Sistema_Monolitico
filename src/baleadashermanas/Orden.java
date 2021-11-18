@@ -47,6 +47,7 @@ import net.sf.jasperreports.view.JasperViewer;
  */
 public class Orden extends javax.swing.JFrame {
     ArrayList<String> clientes = new ArrayList<String>();
+    int totalPrecioOrden;
     boolean hayDecimal = false;
     Statement stmt = null;
     Connection con = null;
@@ -367,6 +368,17 @@ public class Orden extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,e.getMessage());
         }
+    }
+    
+    public void actualizarTotal(){
+       double isv = totalPrecioOrden * 0.15;
+       
+       double subtotal = totalPrecioOrden - isv;
+       
+       txt_total.setText(String.valueOf(totalPrecioOrden));
+       txt_isv.setText(String.valueOf(isv));
+       txt_subtotal.setText(String.valueOf(subtotal));
+      
     }
     
 
@@ -1533,6 +1545,13 @@ public class Orden extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "Producto eliminado");
                     DefaultTableModel model = (DefaultTableModel) tbl_orden.getModel();
                     model.removeRow(filaSeleccionada);
+                    int totalFilas = tbl_orden.getRowCount();
+                    totalPrecioOrden = 0;
+                    for (int i = 0; i < totalFilas; i++) {
+                        totalPrecioOrden += Double.parseDouble(tbl_orden.getValueAt(i, 2).toString()); 
+                    }
+                    
+                    actualizarTotal();
                     btn_eliminar.setEnabled(false);
                 }
 
