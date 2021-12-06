@@ -256,7 +256,7 @@ public class Login extends javax.swing.JFrame {
             }
 
             String contraseñaEncriptada=DigestUtils.md5Hex(contraseñaFinal);
-            String sql = "SELECT * from empleado where usuario_empleado ='" +usuario+ "' and contraseña_empleado='"+contraseñaEncriptada+"' COLLATE Latin1_General_CS_AS";
+            String sql = "SELECT * from empleado where usuario ='" +usuario+ "' and contraseña='"+contraseñaEncriptada+"' COLLATE Latin1_General_CS_AS";
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
             if(isEmpty()){

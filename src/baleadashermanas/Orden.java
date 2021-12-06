@@ -240,7 +240,7 @@ public class Orden extends javax.swing.JFrame {
         String idEmpleado = "";
         try {
             Statement st = con.createStatement();
-            String sql = "Select idempleado from empleado where usuario_empleado = '" + lbl_nombreUsuario.getText() + "'";
+            String sql = "Select idempleado from empleado where usuario = '" + lbl_nombreUsuario.getText() + "'";
             ResultSet rs = st.executeQuery(sql);
             if (rs.next()) {
                 idEmpleado = rs.getString("idempleado");

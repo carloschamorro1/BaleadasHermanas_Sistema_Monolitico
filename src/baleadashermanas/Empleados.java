@@ -99,7 +99,7 @@ public class Empleados extends javax.swing.JFrame {
                     txt_telefonoEmpleado.setText(rs.getString("telefono_empleado"));
                     txt_emailEmpleado.setText(rs.getString("email_empleado"));
                     txt_dniEmpleado.setText(rs.getString("dniempleado"));
-                    txt_usuarioEmpleado.setText(rs.getString("usuario_empleado")); 
+                    txt_usuarioEmpleado.setText(rs.getString("usuario")); 
                     txt_contraseñaEmpleado.setText("");
                     lbl_Dni.setText(rs.getString("dniempleado"));
                     colorear();
@@ -219,7 +219,7 @@ public class Empleados extends javax.swing.JFrame {
     public boolean existeUsuario(){
         try {
             Statement st = con.createStatement();
-            String sql = "Select usuario_empleado from empleado where usuario_empleado = '"+txt_usuarioEmpleado.getText()+"'";
+            String sql = "Select usuario from empleado where usuario = '"+txt_usuarioEmpleado.getText()+"'";
             ResultSet rs = st.executeQuery(sql);
             if(rs.next()){
                 JOptionPane.showMessageDialog(null, "Ya existe el nombre de usuario: "+txt_usuarioEmpleado.getText()+" ", "Nombre de usuario ¡Ya existe!", JOptionPane.INFORMATION_MESSAGE);
@@ -820,135 +820,83 @@ public class Empleados extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txt_telefonoEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_telefonoEmpleadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_telefonoEmpleadoActionPerformed
-
-    private void txt_primerNombreEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_primerNombreEmpleadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_primerNombreEmpleadoActionPerformed
-
-    private void txt_segundoNombreEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_segundoNombreEmpleadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_segundoNombreEmpleadoActionPerformed
-
-    private void txt_primerApellidoEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_primerApellidoEmpleadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_primerApellidoEmpleadoActionPerformed
-
-    private void txt_segundoApellidoEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_segundoApellidoEmpleadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_segundoApellidoEmpleadoActionPerformed
-
-    private void txt_emailEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_emailEmpleadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_emailEmpleadoActionPerformed
-
-    private void txt_dniEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_dniEmpleadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_dniEmpleadoActionPerformed
-
-    private void txt_usuarioEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_usuarioEmpleadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_usuarioEmpleadoActionPerformed
-
-    private void btn_agregarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_agregarMouseEntered
-        btn_agregar.setBackground(new Color(156,2,91));
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_agregarMouseEntered
-
-    private void btn_agregarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_agregarMouseExited
-        btn_agregar.setBackground(new Color(205,63,145));
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_agregarMouseExited
-
-    private void btn_actualizarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_actualizarMouseEntered
-        btn_actualizar.setBackground(new Color(156,2,91));
-    // TODO add your handling code here:
-    }//GEN-LAST:event_btn_actualizarMouseEntered
-
-    private void btn_actualizarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_actualizarMouseExited
-        btn_actualizar.setBackground(new Color(205,63,145));
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_actualizarMouseExited
-
-    private void btn_buscarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_buscarMouseEntered
-        btn_buscar.setBackground(new Color(156,2,91));
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_buscarMouseEntered
-
-    private void btn_buscarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_buscarMouseExited
-        btn_buscar.setBackground(new Color(205,63,145));
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_buscarMouseExited
-
-    private void btn_eliminarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_eliminarMouseEntered
-        btn_eliminar.setBackground(new Color(156,2,91));
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_eliminarMouseEntered
-
-    private void btn_eliminarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_eliminarMouseExited
-        btn_eliminar.setBackground(new Color(205,63,145));
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_eliminarMouseExited
-
     private void lbl_vercontraseñaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_vercontraseñaMouseClicked
         click++;
         if(click%2 != 0){
-            
+
             lbl_vercontraseña.setIcon(new javax.swing.ImageIcon("src\\Img\\ojo.png"));
             txt_contraseñaEmpleado.setEchoChar((char)0);
         }else{
             lbl_vercontraseña.setIcon(new javax.swing.ImageIcon("src\\Img\\ojo-cerrado.png"));
             txt_contraseñaEmpleado.setEchoChar('*');
-        } 
+        }
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_vercontraseñaMouseClicked
-
-    private void lbl_primerNombreEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_primerNombreEmpleadoMousePressed
-        txt_primerNombreEmpleado.requestFocus();
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lbl_primerNombreEmpleadoMousePressed
-
-    private void lbl_telefonoEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_telefonoEmpleadoMousePressed
-        txt_telefonoEmpleado.requestFocus();
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lbl_telefonoEmpleadoMousePressed
-
-    private void lbl_emailEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_emailEmpleadoMousePressed
-        txt_emailEmpleado.requestFocus();
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lbl_emailEmpleadoMousePressed
-
-    private void lbl_dniEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_dniEmpleadoMousePressed
-        txt_dniEmpleado.requestFocus();
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lbl_dniEmpleadoMousePressed
 
     private void lbl_nombreUsuarioEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_nombreUsuarioEmpleadoMousePressed
         txt_usuarioEmpleado.requestFocus();
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_nombreUsuarioEmpleadoMousePressed
 
-    private void txt_contraseñaEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_contraseñaEmpleadoMousePressed
-        txt_contraseñaEmpleado.requestFocus();
+    private void lbl_dniEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_dniEmpleadoMousePressed
+        txt_dniEmpleado.requestFocus();
         // TODO add your handling code here:
-    }//GEN-LAST:event_txt_contraseñaEmpleadoMousePressed
+    }//GEN-LAST:event_lbl_dniEmpleadoMousePressed
 
-    private void lbl_segundoNombreEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_segundoNombreEmpleadoMousePressed
-        txt_segundoNombreEmpleado.requestFocus();
+    private void lbl_emailEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_emailEmpleadoMousePressed
+        txt_emailEmpleado.requestFocus();
         // TODO add your handling code here:
-    }//GEN-LAST:event_lbl_segundoNombreEmpleadoMousePressed
+    }//GEN-LAST:event_lbl_emailEmpleadoMousePressed
+
+    private void lbl_primerNombreEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_primerNombreEmpleadoMousePressed
+        txt_primerNombreEmpleado.requestFocus();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lbl_primerNombreEmpleadoMousePressed
+
+    private void lbl_segundoApellidoEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_segundoApellidoEmpleadoMousePressed
+        txt_segundoApellidoEmpleado.requestFocus();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lbl_segundoApellidoEmpleadoMousePressed
 
     private void lbl_primerApellidoEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_primerApellidoEmpleadoMousePressed
         txt_primerApellidoEmpleado.requestFocus();
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_primerApellidoEmpleadoMousePressed
 
-    private void lbl_segundoApellidoEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_segundoApellidoEmpleadoMousePressed
-        txt_segundoApellidoEmpleado.requestFocus();
+    private void lbl_telefonoEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_telefonoEmpleadoMousePressed
+        txt_telefonoEmpleado.requestFocus();
         // TODO add your handling code here:
-    }//GEN-LAST:event_lbl_segundoApellidoEmpleadoMousePressed
+    }//GEN-LAST:event_lbl_telefonoEmpleadoMousePressed
+
+    private void lbl_contraseñaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_contraseñaMousePressed
+        txt_contraseñaEmpleado.requestFocus();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lbl_contraseñaMousePressed
+
+    private void lbl_segundoNombreEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_segundoNombreEmpleadoMousePressed
+        txt_segundoNombreEmpleado.requestFocus();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lbl_segundoNombreEmpleadoMousePressed
+
+    private void txt_contraseñaEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_contraseñaEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+        if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 ||
+            evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22
+            || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+            return;
+        }
+
+        if(evt.getKeyChar() == 32 || evt.getKeyChar() == 124){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_contraseñaEmpleadoKeyTyped
+
+    private void txt_contraseñaEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_contraseñaEmpleadoMousePressed
+        txt_contraseñaEmpleado.requestFocus();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_contraseñaEmpleadoMousePressed
 
     private void lbl_homeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_homeMousePressed
         Principal principal = new Principal(lbl_nombreUsuario.getText());
@@ -957,16 +905,63 @@ public class Empleados extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_homeMousePressed
 
-    private void lbl_contraseñaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_contraseñaMousePressed
-        txt_contraseñaEmpleado.requestFocus();
+    private void btn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarActionPerformed
+        btn_buscar.setBackground(new Color(40,74,172));
+        String nombreEmpleado = txt_primerNombreEmpleado.getText() + " " + txt_primerApellidoEmpleado.getText();
+        if(JOptionPane.showConfirmDialog(null,"¿Está seguro que desea actualizar el registro del empleado "+nombreEmpleado+"?","Confirmación de eliminación",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE
+        )==JOptionPane.YES_OPTION){
+
+            try{
+                PreparedStatement ps;
+                ResultSet rs;
+                ps=con.prepareStatement("Delete empleado\n" +
+                    "where dniempleado =?");
+                ps.setString(1, lbl_Dni.getText());
+                int res= ps.executeUpdate();
+                if(res >0){
+                    JOptionPane.showMessageDialog(this, "Empleado eliminado");
+                    restablecer();
+                }
+
+            }catch(Exception e){
+
+            }
+
+        }
         // TODO add your handling code here:
-    }//GEN-LAST:event_lbl_contraseñaMousePressed
+    }//GEN-LAST:event_btn_eliminarActionPerformed
+
+    private void btn_eliminarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_eliminarMouseExited
+        btn_eliminar.setBackground(new Color(205,63,145));
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_eliminarMouseExited
+
+    private void btn_eliminarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_eliminarMouseEntered
+        btn_eliminar.setBackground(new Color(156,2,91));
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_eliminarMouseEntered
+
+    private void btn_buscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_buscarActionPerformed
+        btn_buscar.setBackground(new Color(40,74,172));
+        rellenar();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_buscarActionPerformed
+
+    private void btn_buscarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_buscarMouseExited
+        btn_buscar.setBackground(new Color(205,63,145));
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_buscarMouseExited
+
+    private void btn_buscarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_buscarMouseEntered
+        btn_buscar.setBackground(new Color(156,2,91));
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_buscarMouseEntered
 
     private void btn_actualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_actualizarActionPerformed
         btn_actualizar.setBackground(new Color(40,74,172));
-        
+
         String nombreEmpleado = txt_primerNombreEmpleado.getText() + " " + txt_primerApellidoEmpleado.getText();
-         if(JOptionPane.showConfirmDialog(null,"¿Está seguro que desea actualizar el registro del empleado "+nombreEmpleado+"?","Confirmación de actualización",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE
+        if(JOptionPane.showConfirmDialog(null,"¿Está seguro que desea actualizar el registro del empleado "+nombreEmpleado+"?","Confirmación de actualización",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE
         )==JOptionPane.YES_OPTION){
             try{
                 if(estaVacioActualizar()){
@@ -977,7 +972,7 @@ public class Empleados extends javax.swing.JFrame {
                     return;
                 }
 
-                 if(!validarDni(txt_dniEmpleado.getText())){
+                if(!validarDni(txt_dniEmpleado.getText())){
                     return;
 
                 }
@@ -989,330 +984,86 @@ public class Empleados extends javax.swing.JFrame {
                 }
 
                 String contraseñaEncriptada=DigestUtils.md5Hex(contraseñaFinal);
-                
+
                 PreparedStatement ps;
                 ResultSet rs;
                 int telefono = Integer.parseInt(txt_telefonoEmpleado.getText());
                 if(contraseñaFinal.equals("")){
-                     ps=con.prepareStatement("Update empleado\n" +
-                                            "Set primer_nombre_empleado = ?,\n" +
-                                            "segundo_nombre_empleado = ?,\n" +
-                                            "primer_apellido_empleado = ?,\n" +
-                                            "segundo_apellido_empleado = ?," +
-                                            "telefono_empleado =?,\n" +
-                                            "email_empleado = ?,\n" +
-                                            "dniempleado = ?,\n" +
-                                            "usuario_empleado =?\n" +
-                                            "where dniempleado =?");
-                      ps.setString(1, txt_primerNombreEmpleado.getText());
-                      ps.setString(2, txt_segundoNombreEmpleado.getText());
-                      ps.setString(3, txt_primerApellidoEmpleado.getText());
-                      ps.setString(4, txt_segundoApellidoEmpleado.getText());                 
-                      ps.setInt(5, telefono);
-                      ps.setString(6, txt_emailEmpleado.getText());
-                      ps.setString(7, txt_dniEmpleado.getText());
-                      ps.setString(8, txt_usuarioEmpleado.getText());
-                      ps.setString(9, lbl_Dni.getText());
-                      int res= ps.executeUpdate();
-                      if(res >0){
-                          JOptionPane.showMessageDialog(this, "Empleado actualizado");
-                          restablecer();
-                      }
+                    ps=con.prepareStatement("Update empleado\n" +
+                        "Set primer_nombre_empleado = ?,\n" +
+                        "segundo_nombre_empleado = ?,\n" +
+                        "primer_apellido_empleado = ?,\n" +
+                        "segundo_apellido_empleado = ?," +
+                        "telefono_empleado =?,\n" +
+                        "email_empleado = ?,\n" +
+                        "dniempleado = ?,\n" +
+                        "usuario =?\n" +
+                        "where dniempleado =?");
+                    ps.setString(1, txt_primerNombreEmpleado.getText());
+                    ps.setString(2, txt_segundoNombreEmpleado.getText());
+                    ps.setString(3, txt_primerApellidoEmpleado.getText());
+                    ps.setString(4, txt_segundoApellidoEmpleado.getText());
+                    ps.setInt(5, telefono);
+                    ps.setString(6, txt_emailEmpleado.getText());
+                    ps.setString(7, txt_dniEmpleado.getText());
+                    ps.setString(8, txt_usuarioEmpleado.getText());
+                    ps.setString(9, lbl_Dni.getText());
+                    int res= ps.executeUpdate();
+                    if(res >0){
+                        JOptionPane.showMessageDialog(this, "Empleado actualizado");
+                        restablecer();
+                    }
                 }
                 else{
-                    
+
                     ps=con.prepareStatement("Update empleado\n" +
-                                            "Set primer_nombre_empleado = ?,\n" +
-                                            "segundo_nombre_empleado = ?,\n" +
-                                            "primer_apellido_empleado = ?,\n" +
-                                            "segundo_apellido_empleado = ?," +
-                                            "telefono_empleado = ?,\n" +
-                                            "email_empleado = ?,\n" +
-                                            "dniempleado = ?,\n" +
-                                            "usuario_empleado = ?,\n" +
-                                            "contraseña_empleado = ?\n" +
-                                            "where dniempleado =?");
-                      ps.setString(1, txt_primerNombreEmpleado.getText());
-                      ps.setString(2, txt_segundoNombreEmpleado.getText());
-                      ps.setString(3, txt_primerApellidoEmpleado.getText());
-                      ps.setString(4, txt_segundoApellidoEmpleado.getText());                 
-                      ps.setInt(5, telefono);
-                      ps.setString(6, txt_emailEmpleado.getText());
-                      ps.setString(7, txt_dniEmpleado.getText());
-                      ps.setString(8, txt_usuarioEmpleado.getText());
-                      ps.setString(9, contraseñaEncriptada);
-                      ps.setString(10, lbl_Dni.getText());
-                      int res= ps.executeUpdate();
-                      if(res >0){
-                          JOptionPane.showMessageDialog(this, "Empleado actualizado");
-                      }
+                        "Set primer_nombre_empleado = ?,\n" +
+                        "segundo_nombre_empleado = ?,\n" +
+                        "primer_apellido_empleado = ?,\n" +
+                        "segundo_apellido_empleado = ?," +
+                        "telefono_empleado = ?,\n" +
+                        "email_empleado = ?,\n" +
+                        "dniempleado = ?,\n" +
+                        "usuario = ?,\n" +
+                        "contraseña = ?\n" +
+                        "where dniempleado =?");
+                    ps.setString(1, txt_primerNombreEmpleado.getText());
+                    ps.setString(2, txt_segundoNombreEmpleado.getText());
+                    ps.setString(3, txt_primerApellidoEmpleado.getText());
+                    ps.setString(4, txt_segundoApellidoEmpleado.getText());
+                    ps.setInt(5, telefono);
+                    ps.setString(6, txt_emailEmpleado.getText());
+                    ps.setString(7, txt_dniEmpleado.getText());
+                    ps.setString(8, txt_usuarioEmpleado.getText());
+                    ps.setString(9, contraseñaEncriptada);
+                    ps.setString(10, lbl_Dni.getText());
+                    int res= ps.executeUpdate();
+                    if(res >0){
+                        JOptionPane.showMessageDialog(this, "Empleado actualizado");
+                    }
                 }
 
             }catch(HeadlessException | SQLException e){
 
             }
-         }
-        
+        }
+
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_actualizarActionPerformed
 
-    private void btn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarActionPerformed
-        btn_buscar.setBackground(new Color(40,74,172));
-        String nombreEmpleado = txt_primerNombreEmpleado.getText() + " " + txt_primerApellidoEmpleado.getText();
-         if(JOptionPane.showConfirmDialog(null,"¿Está seguro que desea actualizar el registro del empleado "+nombreEmpleado+"?","Confirmación de eliminación",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE
-        )==JOptionPane.YES_OPTION){
-             
-            try{
-            PreparedStatement ps;
-            ResultSet rs;
-            ps=con.prepareStatement("Delete empleado\n" +
-                                    "where dniempleado =?");      
-            ps.setString(1, lbl_Dni.getText());
-            int res= ps.executeUpdate();
-            if(res >0){
-                JOptionPane.showMessageDialog(this, "Empleado eliminado");
-                restablecer();
-                      }
-           
-            }catch(Exception e){
-                
-            }
-            
-         }
+    private void btn_actualizarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_actualizarMouseExited
+        btn_actualizar.setBackground(new Color(205,63,145));
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_eliminarActionPerformed
+    }//GEN-LAST:event_btn_actualizarMouseExited
 
-    private void txt_primerNombreEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_primerNombreEmpleadoKeyTyped
-        char a=evt.getKeyChar();
-   
-            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
-                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
-                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
-        return;
-        }
-         if(evt.getKeyChar() == 32){
-             if(txt_primerNombreEmpleado.getText().length() == 0){
-                 evt.consume();
-                 Toolkit.getDefaultToolkit().beep();
-                 return;
-             }
-             if(txt_primerNombreEmpleado.getText().substring(txt_primerNombreEmpleado.getText().length() - 1).equals(" ")){
-                 evt.consume();
-                 Toolkit.getDefaultToolkit().beep();
-             }
-             return; 
-         }
-        if(txt_primerNombreEmpleado.getText().length() >=40){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
-        }
-        
-        if(Character.isDigit(a) || !Character.isLetterOrDigit(a) ){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Sólo letras");
-        }
+    private void btn_actualizarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_actualizarMouseEntered
+        btn_actualizar.setBackground(new Color(156,2,91));
         // TODO add your handling code here:
-    }//GEN-LAST:event_txt_primerNombreEmpleadoKeyTyped
-
-    private void txt_segundoNombreEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_segundoNombreEmpleadoKeyTyped
-        char a=evt.getKeyChar();
-   
-            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
-                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
-                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
-        return;
-        }
-         if(evt.getKeyChar() == 32){
-             if(txt_segundoNombreEmpleado.getText().length() == 0){
-                 evt.consume();
-                 Toolkit.getDefaultToolkit().beep();
-                 return;
-             }
-             if(txt_segundoNombreEmpleado.getText().substring(txt_segundoNombreEmpleado.getText().length() - 1).equals(" ")){
-                 evt.consume();
-                 Toolkit.getDefaultToolkit().beep();
-             }
-             return; 
-         }
-        if(txt_segundoNombreEmpleado.getText().length() >=40){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
-        }
-        
-        if(Character.isDigit(a) || !Character.isLetterOrDigit(a) ){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Sólo letras");
-        }
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_segundoNombreEmpleadoKeyTyped
-
-    private void txt_primerApellidoEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_primerApellidoEmpleadoKeyTyped
-        char a=evt.getKeyChar();
-   
-            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
-                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
-                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
-        return;
-        }
-         if(evt.getKeyChar() == 32){
-             if(txt_primerApellidoEmpleado.getText().length() == 0){
-                 evt.consume();
-                 Toolkit.getDefaultToolkit().beep();
-                 return;
-             }
-             if(txt_primerApellidoEmpleado.getText().substring(txt_primerApellidoEmpleado.getText().length() - 1).equals(" ")){
-                 evt.consume();
-                 Toolkit.getDefaultToolkit().beep();
-             }
-             return; 
-         }
-        if(txt_primerApellidoEmpleado.getText().length() >=40){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
-        }
-        
-        if(Character.isDigit(a) || !Character.isLetterOrDigit(a) ){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Sólo letras");
-        }
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_primerApellidoEmpleadoKeyTyped
-
-    private void txt_segundoApellidoEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_segundoApellidoEmpleadoKeyTyped
-         char a=evt.getKeyChar();
-   
-            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
-                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
-                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
-        return;
-        }
-         if(evt.getKeyChar() == 32){
-             if(txt_segundoApellidoEmpleado.getText().length() == 0){
-                 evt.consume();
-                 Toolkit.getDefaultToolkit().beep();
-                 return;
-             }
-             if(txt_segundoApellidoEmpleado.getText().substring(txt_segundoApellidoEmpleado.getText().length() - 1).equals(" ")){
-                 evt.consume();
-                 Toolkit.getDefaultToolkit().beep();
-             }
-             return; 
-         }
-        if(txt_segundoApellidoEmpleado.getText().length() >=40){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
-        }
-        
-        if(Character.isDigit(a) || !Character.isLetterOrDigit(a) ){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Sólo letras");
-        }
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_segundoApellidoEmpleadoKeyTyped
-
-    private void txt_telefonoEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_telefonoEmpleadoKeyTyped
-        char a=evt.getKeyChar();
-            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
-                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
-                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
-        return;
-        }
-        if(txt_telefonoEmpleado.getText().length() >=8){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Número máximo de dígitos admitidos");
-        }
-     
-        if(Character.isLetter(a) || !Character.isLetterOrDigit(a)){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Sólo números");
-        }
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_telefonoEmpleadoKeyTyped
-
-    private void txt_dniEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_dniEmpleadoKeyTyped
-        char a=evt.getKeyChar();
-            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
-                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
-                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
-        return;
-        }
-        if(txt_dniEmpleado.getText().length() >=13){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Número máximo de dígitos admitidos");
-        }
-        if(Character.isLetter(a) || !Character.isLetterOrDigit(a)){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Solo números");
-        }
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_dniEmpleadoKeyTyped
-
-    private void txt_emailEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_emailEmpleadoKeyTyped
-         char a=evt.getKeyChar();
-            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
-                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
-                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
-        return;
-        }
-        if(txt_emailEmpleado.getText().length() >=50){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
-        }
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_emailEmpleadoKeyTyped
-
-    private void txt_usuarioEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_usuarioEmpleadoKeyTyped
-        char a=evt.getKeyChar();
-            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
-                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
-                 || evt.getKeyChar() == 46 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
-        return;
-        }
-        
-        if(txt_usuarioEmpleado.getText().length() >=25){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
-        } 
-        if(!Character.isLetterOrDigit(a) ){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Sólo letras y numeros");
-        }
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_usuarioEmpleadoKeyTyped
-
-    private void txt_contraseñaEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_contraseñaEmpleadoKeyTyped
-        char a=evt.getKeyChar();
-            if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 || 
-                 evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22 
-                 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
-        return;
-            }
-            
-        if(evt.getKeyChar() == 32 || evt.getKeyChar() == 124){
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-        }
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_contraseñaEmpleadoKeyTyped
+    }//GEN-LAST:event_btn_actualizarMouseEntered
 
     private void btn_agregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_agregarActionPerformed
-         btn_agregar.setBackground(new Color(40,74,172));
-        
+        btn_agregar.setBackground(new Color(40,74,172));
+
         try{
             if(estaVacio()){
                 return;
@@ -1330,11 +1081,11 @@ public class Empleados extends javax.swing.JFrame {
                 return;
             }
 
-             if(!validarDni(txt_dniEmpleado.getText())){
+            if(!validarDni(txt_dniEmpleado.getText())){
                 return;
 
             }
-             
+
             char[] c = txt_contraseñaEmpleado.getPassword();
             String contraseñaFinal ="";
             for (int i = 0; i < c.length; i++) {
@@ -1344,36 +1095,285 @@ public class Empleados extends javax.swing.JFrame {
             String contraseñaEncriptada=DigestUtils.md5Hex(contraseñaFinal);
             PreparedStatement ps;
             ResultSet rs;
-        
-          ps=con.prepareStatement("INSERT INTO empleado (primer_nombre_empleado, segundo_nombre_empleado, primer_apellido_empleado, segundo_apellido_empleado,"
-                  + "telefono_empleado, email_empleado,dniempleado,usuario_empleado,contraseña_empleado)"
-                  + "VALUES(?,?,?,?,?,?,?,?,?)");
-                  ps.setString(1, txt_primerNombreEmpleado.getText());
-                  ps.setString(2, txt_segundoNombreEmpleado.getText());
-                  ps.setString(3, txt_primerApellidoEmpleado.getText());
-                  ps.setString(4, txt_segundoApellidoEmpleado.getText());
-                  ps.setString(5, txt_telefonoEmpleado.getText());
-                  ps.setString(6, txt_emailEmpleado.getText());
-                  ps.setString(7, txt_dniEmpleado.getText());
-                  ps.setString(8, txt_usuarioEmpleado.getText());
-                  ps.setString(9, contraseñaEncriptada);
-                  int res= ps.executeUpdate();
-                  if(res >0){
-                      JOptionPane.showMessageDialog(this, "Empleado agregado");
-                      restablecer();
-                  }
-                  
+
+            ps=con.prepareStatement("INSERT INTO empleado (primer_nombre_empleado, segundo_nombre_empleado, primer_apellido_empleado, segundo_apellido_empleado,"
+                + "telefono_empleado, email_empleado,dniempleado,usuario,contraseña)"
+                + "VALUES(?,?,?,?,?,?,?,?,?)");
+            ps.setString(1, txt_primerNombreEmpleado.getText());
+            ps.setString(2, txt_segundoNombreEmpleado.getText());
+            ps.setString(3, txt_primerApellidoEmpleado.getText());
+            ps.setString(4, txt_segundoApellidoEmpleado.getText());
+            ps.setString(5, txt_telefonoEmpleado.getText());
+            ps.setString(6, txt_emailEmpleado.getText());
+            ps.setString(7, txt_dniEmpleado.getText());
+            ps.setString(8, txt_usuarioEmpleado.getText());
+            ps.setString(9, contraseñaEncriptada);
+            int res= ps.executeUpdate();
+            if(res >0){
+                JOptionPane.showMessageDialog(this, "Empleado agregado");
+                restablecer();
+            }
+
         }catch(Exception e){
-            
+
         }
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_agregarActionPerformed
 
-    private void btn_buscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_buscarActionPerformed
-        btn_buscar.setBackground(new Color(40,74,172));
-        rellenar();
+    private void btn_agregarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_agregarMouseExited
+        btn_agregar.setBackground(new Color(205,63,145));
         // TODO add your handling code here:
-    }//GEN-LAST:event_btn_buscarActionPerformed
+    }//GEN-LAST:event_btn_agregarMouseExited
+
+    private void btn_agregarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_agregarMouseEntered
+        btn_agregar.setBackground(new Color(156,2,91));
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_agregarMouseEntered
+
+    private void txt_usuarioEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_usuarioEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+        if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 ||
+            evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22
+            || evt.getKeyChar() == 46 || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+            return;
+        }
+
+        if(txt_usuarioEmpleado.getText().length() >=25){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
+        }
+        if(!Character.isLetterOrDigit(a) ){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo letras y numeros");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_usuarioEmpleadoKeyTyped
+
+    private void txt_usuarioEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_usuarioEmpleadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_usuarioEmpleadoActionPerformed
+
+    private void txt_dniEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_dniEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+        if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 ||
+            evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22
+            || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+            return;
+        }
+        if(txt_dniEmpleado.getText().length() >=13){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de dígitos admitidos");
+        }
+        if(Character.isLetter(a) || !Character.isLetterOrDigit(a)){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Solo números");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_dniEmpleadoKeyTyped
+
+    private void txt_dniEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_dniEmpleadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_dniEmpleadoActionPerformed
+
+    private void txt_emailEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_emailEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+        if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 ||
+            evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22
+            || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+            return;
+        }
+        if(txt_emailEmpleado.getText().length() >=50){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_emailEmpleadoKeyTyped
+
+    private void txt_emailEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_emailEmpleadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_emailEmpleadoActionPerformed
+
+    private void txt_telefonoEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_telefonoEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+        if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 ||
+            evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22
+            || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+            return;
+        }
+        if(txt_telefonoEmpleado.getText().length() >=8){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de dígitos admitidos");
+        }
+
+        if(Character.isLetter(a) || !Character.isLetterOrDigit(a)){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo números");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_telefonoEmpleadoKeyTyped
+
+    private void txt_telefonoEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_telefonoEmpleadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_telefonoEmpleadoActionPerformed
+
+    private void txt_segundoApellidoEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_segundoApellidoEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+
+        if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 ||
+            evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22
+            || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+            return;
+        }
+        if(evt.getKeyChar() == 32){
+            if(txt_segundoApellidoEmpleado.getText().length() == 0){
+                evt.consume();
+                Toolkit.getDefaultToolkit().beep();
+                return;
+            }
+            if(txt_segundoApellidoEmpleado.getText().substring(txt_segundoApellidoEmpleado.getText().length() - 1).equals(" ")){
+                evt.consume();
+                Toolkit.getDefaultToolkit().beep();
+            }
+            return;
+        }
+        if(txt_segundoApellidoEmpleado.getText().length() >=40){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
+        }
+
+        if(Character.isDigit(a) || !Character.isLetterOrDigit(a) ){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo letras");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_segundoApellidoEmpleadoKeyTyped
+
+    private void txt_segundoApellidoEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_segundoApellidoEmpleadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_segundoApellidoEmpleadoActionPerformed
+
+    private void txt_primerApellidoEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_primerApellidoEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+
+        if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 ||
+            evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22
+            || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+            return;
+        }
+        if(evt.getKeyChar() == 32){
+            if(txt_primerApellidoEmpleado.getText().length() == 0){
+                evt.consume();
+                Toolkit.getDefaultToolkit().beep();
+                return;
+            }
+            if(txt_primerApellidoEmpleado.getText().substring(txt_primerApellidoEmpleado.getText().length() - 1).equals(" ")){
+                evt.consume();
+                Toolkit.getDefaultToolkit().beep();
+            }
+            return;
+        }
+        if(txt_primerApellidoEmpleado.getText().length() >=40){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
+        }
+
+        if(Character.isDigit(a) || !Character.isLetterOrDigit(a) ){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo letras");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_primerApellidoEmpleadoKeyTyped
+
+    private void txt_primerApellidoEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_primerApellidoEmpleadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_primerApellidoEmpleadoActionPerformed
+
+    private void txt_segundoNombreEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_segundoNombreEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+
+        if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 ||
+            evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22
+            || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+            return;
+        }
+        if(evt.getKeyChar() == 32){
+            if(txt_segundoNombreEmpleado.getText().length() == 0){
+                evt.consume();
+                Toolkit.getDefaultToolkit().beep();
+                return;
+            }
+            if(txt_segundoNombreEmpleado.getText().substring(txt_segundoNombreEmpleado.getText().length() - 1).equals(" ")){
+                evt.consume();
+                Toolkit.getDefaultToolkit().beep();
+            }
+            return;
+        }
+        if(txt_segundoNombreEmpleado.getText().length() >=40){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
+        }
+
+        if(Character.isDigit(a) || !Character.isLetterOrDigit(a) ){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo letras");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_segundoNombreEmpleadoKeyTyped
+
+    private void txt_segundoNombreEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_segundoNombreEmpleadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_segundoNombreEmpleadoActionPerformed
+
+    private void txt_primerNombreEmpleadoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_primerNombreEmpleadoKeyTyped
+        char a=evt.getKeyChar();
+
+        if (evt.getKeyChar() == 8 || evt.getKeyChar() == 127 ||
+            evt.getKeyChar() == 0 || evt.getKeyChar() == 3 || evt.getKeyChar() == 22
+            || evt.getKeyChar() == 26 || evt.getKeyChar() == 24) {
+            return;
+        }
+        if(evt.getKeyChar() == 32){
+            if(txt_primerNombreEmpleado.getText().length() == 0){
+                evt.consume();
+                Toolkit.getDefaultToolkit().beep();
+                return;
+            }
+            if(txt_primerNombreEmpleado.getText().substring(txt_primerNombreEmpleado.getText().length() - 1).equals(" ")){
+                evt.consume();
+                Toolkit.getDefaultToolkit().beep();
+            }
+            return;
+        }
+        if(txt_primerNombreEmpleado.getText().length() >=40){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Número máximo de caracteres admitidos");
+        }
+
+        if(Character.isDigit(a) || !Character.isLetterOrDigit(a) ){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Sólo letras");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_primerNombreEmpleadoKeyTyped
+
+    private void txt_primerNombreEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_primerNombreEmpleadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_primerNombreEmpleadoActionPerformed
 
     /**
      * @param args the command line arguments

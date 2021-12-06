@@ -96,7 +96,7 @@
                               <Component id="lbl_precioProducto" alignment="0" min="-2" pref="32" max="-2" attributes="0"/>
                               <Group type="103" alignment="0" groupAlignment="1" attributes="0">
                                   <Component id="lbl_cantidadProducto" alignment="1" min="-2" pref="32" max="-2" attributes="0"/>
-                                  <Component id="lbl_segundoApellidoEmpleado" alignment="1" min="-2" pref="32" max="-2" attributes="0"/>
+                                  <Component id="lbl_tipoMovimiento" alignment="1" min="-2" pref="32" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -186,7 +186,7 @@
                                   <Group type="102" attributes="0">
                                       <Component id="lbl_cantidadProducto" min="-2" pref="68" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
-                                      <Component id="lbl_segundoApellidoEmpleado" min="-2" pref="68" max="-2" attributes="0"/>
+                                      <Component id="lbl_tipoMovimiento" min="-2" pref="68" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
                                       <Component id="lbl_precioProducto" min="-2" pref="68" max="-2" attributes="0"/>
                                   </Group>
@@ -371,14 +371,14 @@
                 <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lbl_cantidadProductoMousePressed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JLabel" name="lbl_segundoApellidoEmpleado">
+            <Component class="javax.swing.JLabel" name="lbl_tipoMovimiento">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/Img/inventario.png"/>
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lbl_segundoApellidoEmpleadoMousePressed"/>
+                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lbl_tipoMovimientoMousePressed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_nombreProducto">

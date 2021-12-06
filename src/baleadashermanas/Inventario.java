@@ -169,7 +169,7 @@ public class Inventario extends javax.swing.JFrame {
         String idEmpleado = "";
         try {
             Statement st = con.createStatement();
-            String sql = "Select idempleado from empleado where usuario_empleado = '" + lbl_nombreUsuario.getText() + "'";
+            String sql = "Select idempleado from empleado where usuario = '" + lbl_nombreUsuario.getText() + "'";
             ResultSet rs = st.executeQuery(sql);
             if (rs.next()) {
                 idEmpleado = rs.getString("idempleado");
@@ -204,7 +204,7 @@ public class Inventario extends javax.swing.JFrame {
         lbl_tituloInventario = new javax.swing.JLabel();
         lbl_precioProducto = new javax.swing.JLabel();
         lbl_cantidadProducto = new javax.swing.JLabel();
-        lbl_segundoApellidoEmpleado = new javax.swing.JLabel();
+        lbl_tipoMovimiento = new javax.swing.JLabel();
         lbl_nombreProducto = new javax.swing.JLabel();
         spi_cantidadProducto = new javax.swing.JSpinner();
         cmb_tipoMovimiento = new javax.swing.JComboBox<>();
@@ -356,10 +356,10 @@ public class Inventario extends javax.swing.JFrame {
             }
         });
 
-        lbl_segundoApellidoEmpleado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/inventario.png"))); // NOI18N
-        lbl_segundoApellidoEmpleado.addMouseListener(new java.awt.event.MouseAdapter() {
+        lbl_tipoMovimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/inventario.png"))); // NOI18N
+        lbl_tipoMovimiento.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                lbl_segundoApellidoEmpleadoMousePressed(evt);
+                lbl_tipoMovimientoMousePressed(evt);
             }
         });
 
@@ -400,7 +400,7 @@ public class Inventario extends javax.swing.JFrame {
                         .addComponent(lbl_precioProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(lbl_cantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbl_segundoApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(lbl_tipoMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txt_nombreProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
@@ -473,7 +473,7 @@ public class Inventario extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(lbl_cantidadProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(63, 63, 63)
-                                .addComponent(lbl_segundoApellidoEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lbl_tipoMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(36, 36, 36)
                                 .addComponent(lbl_precioProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -583,10 +583,10 @@ public class Inventario extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_lbl_cantidadProductoMousePressed
 
-    private void lbl_segundoApellidoEmpleadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_segundoApellidoEmpleadoMousePressed
+    private void lbl_tipoMovimientoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_tipoMovimientoMousePressed
 
         // TODO add your handling code here:
-    }//GEN-LAST:event_lbl_segundoApellidoEmpleadoMousePressed
+    }//GEN-LAST:event_lbl_tipoMovimientoMousePressed
 
     private void lbl_nombreProductoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_nombreProductoMousePressed
         txt_nombreProducto.requestFocus();
@@ -808,7 +808,7 @@ public class Inventario extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_nombreProducto;
     private javax.swing.JLabel lbl_nombreUsuario;
     private javax.swing.JLabel lbl_precioProducto;
-    private javax.swing.JLabel lbl_segundoApellidoEmpleado;
+    private javax.swing.JLabel lbl_tipoMovimiento;
     private javax.swing.JLabel lbl_tituloInventario;
     private javax.swing.JLabel lbl_usuario;
     private javax.swing.JSpinner spi_cantidadProducto;
