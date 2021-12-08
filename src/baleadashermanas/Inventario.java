@@ -158,6 +158,7 @@ public class Inventario extends javax.swing.JFrame {
 
     public void restablecer() {
         limpiar();
+        holders();
         btn_agregar.setEnabled(true);
         btn_buscar.setEnabled(true);
         btn_actualizar.setEnabled(false);
