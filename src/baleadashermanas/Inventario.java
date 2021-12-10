@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
 
 /**
  *
@@ -42,6 +43,7 @@ public class Inventario extends javax.swing.JFrame {
         lbl_nombreUsuario.setText(nombreUsuario);
         this.con = ConexionBD.obtenerConexion();
         lbl_idProducto.setVisible(false);
+        ((JSpinner.DefaultEditor) spi_cantidadProducto.getEditor()).getTextField().setEditable(false);
     }
 
     public Inventario() {

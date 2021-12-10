@@ -226,6 +226,7 @@ public class Orden extends javax.swing.JFrame {
         txt_total.setText("0");
         txt_pago.setText("");
         cmb_metodoPago.setSelectedItem("Seleccione el método");
+        cmb_metodoPago.setEnabled(false);
         txt_cambio.setText("");
         cmb_cliente.setEnabled(true);
         cmb_cliente.setSelectedItem("1. Consumidor Final");
